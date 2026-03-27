@@ -1,0 +1,765 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kiwi Home</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+          Cantarell, sans-serif;
+        background: #0a0e27;
+        min-height: 100vh;
+        padding: 20px;
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* Animated Gradient Background */
+      .gradient-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        z-index: -1;
+        overflow: hidden;
+      }
+
+      .gradient-bg::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 1000vh;
+        background: linear-gradient(
+          0deg,
+          rgb(101, 91, 239) 0%,
+          rgb(250, 40, 191) 20%,
+          rgb(255, 70, 101) 40%,
+          rgb(251, 222, 78) 60%,
+          rgb(0, 251, 234) 80%,
+          rgb(85, 93, 239) 100%
+        );
+        animation: gradientMove 17.5s ease-in-out infinite;
+        opacity: 0.15;
+      }
+
+      @keyframes gradientMove {
+        0% {
+          top: 0;
+        }
+        50% {
+          top: calc(100vh - 1000vh);
+        }
+        100% {
+          top: 0;
+        }
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        position: relative;
+        z-index: 1;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding-top: 40px;
+      }
+
+      .header h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .time {
+        font-size: 1.2em;
+        opacity: 0.9;
+      }
+
+      .search-box {
+        margin-bottom: 40px;
+      }
+
+      /* ========== SEARCH FORM ANIMATIONS ========== */
+      .search-form {
+        display: flex;
+        position: relative;
+        background: transparent;
+        border: 1px solid #00d4ff;
+        border-radius: 50px;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .search-form:hover {
+        border-color: #00f0ff;
+        transform: translateY(-2px);
+      }
+
+      /* Progress fill animation */
+      .search-form::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0;
+        height: 100%;
+        background: linear-gradient(90deg, #00d4ff 0%, #0066ff 100%);
+        border-radius: 50px;
+        transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 0;
+        opacity: 0;
+      }
+
+      .search-form.searching::before {
+        width: 100%;
+        opacity: 0.25;
+        animation: shimmer 1.5s infinite;
+      }
+
+      @keyframes shimmer {
+        0% {
+          background-position: -200% center;
+        }
+        100% {
+          background-position: 200% center;
+        }
+      }
+
+      .search-input {
+        flex: 1;
+        border: none;
+        padding: 18px 25px;
+        font-size: 16px;
+        outline: none;
+        background: transparent;
+        color: #ffffff;
+        position: relative;
+        z-index: 1;
+        transition: all 0.3s ease;
+      }
+
+      .search-input::placeholder {
+        color: #00d4ff;
+        opacity: 0.6;
+        transition: all 0.3s ease;
+      }
+
+      .search-form:hover .search-input::placeholder {
+        color: #00f0ff;
+        opacity: 0.8;
+      }
+
+      .search-form.searching .search-input {
+        color: #00f0ff;
+        font-weight: 500;
+      }
+
+      /* ========== SEARCH BUTTON WITH ARROW ========== */
+      .search-btn {
+        border: none;
+        background: transparent;
+        color: white;
+        padding: 18px 30px;
+        font-size: 0;
+        cursor: pointer;
+        position: relative;
+        z-index: 1;
+        overflow: visible;
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      /* CSS Arrow Icon */
+      .search-btn::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 12px;
+        height: 12px;
+        border-right: 1.5px solid #00d4ff;
+        border-top: 1.5px solid #00d4ff;
+        transform: translate(-50%, -50%) rotate(45deg);
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      /* Arrow hover animation - nudge right */
+      .search-btn:hover::before {
+        transform: translate(-40%, -50%) rotate(45deg);
+        border-color: #00f0ff;
+      }
+
+      /* Button hover effects */
+      .search-btn:hover {
+        transform: scale(1.05);
+      }
+
+      /* Button active/click feedback */
+      .search-btn:active {
+        transform: scale(0.95);
+      }
+
+      /* Pulse animation on searching */
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.7;
+        }
+      }
+
+      .search-form.searching .search-btn::before {
+        animation: pulse 1.5s infinite;
+      }
+
+      .quick-links {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 30px;
+      }
+
+      /* ========== SOCIAL BUTTON ANIMATIONS ========== */
+      .youtube-btn,
+      .amazon-btn,
+      .pinterest-btn {
+        position: relative;
+        overflow: visible;
+      }
+
+      /* Checkmark SVG styling */
+      .checkmark {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        display: block;
+        stroke-width: 2;
+        stroke: #fff;
+        stroke-miterlimit: 10;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .checkmark__circle {
+        stroke-dasharray: 166;
+        stroke-dashoffset: 166;
+        stroke-width: 2;
+        stroke-miterlimit: 10;
+        stroke: #fff;
+        fill: none;
+      }
+
+      .checkmark__check {
+        transform-origin: 50% 50%;
+        stroke-dasharray: 48;
+        stroke-dashoffset: 48;
+        stroke-width: 3;
+        stroke: #fff;
+        fill: none;
+      }
+
+      /* Animation keyframes */
+      @keyframes checkmark-stroke {
+        100% {
+          stroke-dashoffset: 0;
+        }
+      }
+
+      @keyframes checkmark-scale {
+        0%,
+        100% {
+          transform: translate(-50%, -50%) scale(1);
+        }
+        50% {
+          transform: translate(-50%, -50%) scale(1.1);
+        }
+      }
+
+      @keyframes checkmark-fill {
+        100% {
+          box-shadow: inset 0px 0px 0px 30px currentColor;
+        }
+      }
+
+      /* Active state animations */
+      .youtube-btn.active .checkmark,
+      .amazon-btn.active .checkmark,
+      .pinterest-btn.active .checkmark {
+        opacity: 1;
+        animation: checkmark-scale 0.3s ease-in-out 0.9s both;
+      }
+
+      .youtube-btn.active .checkmark__circle,
+      .amazon-btn.active .checkmark__circle,
+      .pinterest-btn.active .checkmark__circle {
+        animation: checkmark-stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+      }
+
+      .youtube-btn.active .checkmark__check,
+      .amazon-btn.active .checkmark__check,
+      .pinterest-btn.active .checkmark__check {
+        animation: checkmark-stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s
+          forwards;
+      }
+
+      /* Hide original icon when active */
+      .youtube-btn.active svg:first-child,
+      .amazon-btn.active svg:first-child,
+      .pinterest-btn.active svg:first-child {
+        opacity: 0;
+        transform: scale(0.8);
+        transition: all 0.3s ease;
+      }
+
+      .youtube-btn {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: rgba(255, 0, 0, 0.9);
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .youtube-btn:hover:not(.active) {
+        transform: scale(1.05);
+        box-shadow:
+          0 8px 25px rgba(255, 0, 0, 0.5),
+          0 0 20px rgba(255, 0, 0, 0.3);
+      }
+
+      .youtube-btn svg:first-child {
+        width: 24px;
+        height: 24px;
+        color: white;
+        transition: all 0.3s ease;
+      }
+
+      .youtube-btn.active {
+        background: rgb(255, 0, 0);
+        box-shadow: 0 4px 20px rgba(255, 0, 0, 0.6);
+      }
+
+      .amazon-btn {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.9);
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        margin-left: 15px;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .amazon-btn:hover:not(.active) {
+        transform: scale(1.05);
+        box-shadow:
+          0 8px 25px rgba(255, 153, 0, 0.5),
+          0 0 20px rgba(255, 153, 0, 0.3);
+      }
+
+      .amazon-btn svg:first-child {
+        width: 24px;
+        height: 24px;
+        color: white;
+        transition: all 0.3s ease;
+      }
+
+      .amazon-btn.active {
+        background: rgb(0, 0, 0);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+      }
+
+      .pinterest-btn {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: rgba(230, 0, 35, 0.9);
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        margin-left: 15px;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .pinterest-btn:hover:not(.active) {
+        transform: scale(1.05);
+        box-shadow:
+          0 8px 25px rgba(230, 0, 35, 0.5),
+          0 0 20px rgba(230, 0, 35, 0.3);
+      }
+
+      .pinterest-btn svg:first-child {
+        width: 34px;
+        height: 34px;
+        margin-top: -2px;
+        transition: all 0.3s ease;
+      }
+
+      .pinterest-btn.active {
+        background: rgb(230, 0, 35);
+        box-shadow: 0 4px 20px rgba(230, 0, 35, 0.6);
+      }
+
+      .link-card {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 20px;
+        text-align: center;
+        text-decoration: none;
+        color: white;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .link-card:active {
+        transform: scale(0.95);
+        background: rgba(255, 255, 255, 0.25);
+      }
+
+      .link-icon {
+        font-size: 2em;
+        margin-bottom: 10px;
+        display: block;
+      }
+
+      .link-name {
+        font-size: 0.9em;
+        font-weight: 500;
+      }
+
+      .footer {
+        text-align: center;
+        opacity: 0.7;
+        font-size: 0.9em;
+        padding-top: 20px;
+        padding-bottom: 50px;
+        color: #00d4ff;
+      }
+
+      .yt-embed {
+        display: flex;
+        justify-content: center;
+        margin-top: auto;
+        margin-bottom: 10px;
+      }
+
+      .yt-embed iframe {
+        border-radius: 10px;
+        opacity: 0.85;
+      }
+
+      .quote {
+        text-align: center;
+        margin-top: 0;
+        margin-bottom: 15px;
+        font-size: 0.75em;
+        color: #00d4ff;
+        opacity: 0.5;
+        font-style: italic;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.4;
+      }
+
+      @media (max-width: 480px) {
+        .header h1 {
+          font-size: 2em;
+        }
+
+        .quick-links {
+          grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+          gap: 12px;
+        }
+
+        .link-card {
+          padding: 15px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="gradient-bg"></div>
+    <div class="container">
+      <div class="search-box">
+        <form class="search-form" onsubmit="return handleSearch(event);">
+          <input
+            type="text"
+            class="search-input"
+            placeholder=""
+            id="searchInput"
+            autocomplete="off"
+          />
+          <button type="submit" class="search-btn"></button>
+        </form>
+      </div>
+
+      <div class="quick-links">
+        <button
+          class="youtube-btn"
+          onclick="
+            searchOn('https://www.youtube.com/results?search_query=', this)
+          "
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path
+              d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"
+            />
+          </svg>
+          <svg
+            class="checkmark"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 52 52"
+          >
+            <circle
+              class="checkmark__circle"
+              cx="26"
+              cy="26"
+              r="25"
+              fill="none"
+            />
+            <path
+              class="checkmark__check"
+              fill="none"
+              d="M14.1 27.2l7.1 7.2 16.7-16.8"
+            />
+          </svg>
+        </button>
+
+        <button
+          class="amazon-btn"
+          onclick="searchOn('https://www.amazon.in/s?k=', this)"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 122.879 111.709"
+            fill="currentColor"
+          >
+            <path
+              d="M33.848,54.85c0-5.139,1.266-9.533,3.798-13.182c2.532-3.649,5.995-6.404,10.389-8.266 c4.021-1.713,8.974-2.941,14.858-3.687c2.01-0.223,5.287-0.521,9.83-0.894v-1.899c0-4.766-0.521-7.968-1.564-9.607 c-1.564-2.235-4.021-3.351-7.373-3.351h-0.893c-2.458,0.223-4.581,1.005-6.368,2.345c-1.787,1.341-2.942,3.202-3.463,5.586 c-0.298,1.489-1.042,2.345-2.234,2.569l-12.847-1.564c-1.266-0.298-1.899-0.968-1.899-2.011c0-0.223,0.037-0.484,0.111-0.781 c1.266-6.628,4.375-11.543,9.328-14.746C50.473,2.161,56.264,0.373,62.893,0h2.793c8.488,0,15.117,2.197,19.885,6.591 c0.746,0.748,1.438,1.55,2.066,2.401c0.631,0.856,1.135,1.62,1.506,2.29c0.373,0.67,0.709,1.639,1.006,2.904 c0.299,1.267,0.521,2.142,0.672,2.625c0.148,0.484,0.26,1.527,0.334,3.129c0.074,1.601,0.111,2.55,0.111,2.848v27.034 c0,1.936,0.279,3.705,0.838,5.306c0.559,1.602,1.1,2.756,1.619,3.463c0.521,0.707,1.379,1.844,2.57,3.406 c0.447,0.672,0.67,1.268,0.67,1.789c0,0.596-0.297,1.115-0.895,1.563c-6.18,5.363-9.531,8.268-10.053,8.715 c-0.893,0.67-1.973,0.744-3.24,0.223c-1.041-0.895-1.953-1.75-2.736-2.57c-0.781-0.818-1.34-1.414-1.676-1.787 c-0.334-0.371-0.875-1.098-1.619-2.178s-1.268-1.807-1.564-2.178c-4.17,4.543-8.266,7.373-12.287,8.49 c-2.533,0.744-5.661,1.117-9.384,1.117c-5.735,0-10.445-1.77-14.131-5.307C35.691,66.336,33.848,61.328,33.848,54.85L33.848,54.85z M53.062,52.615c0,2.905,0.727,5.232,2.178,6.982c1.453,1.75,3.407,2.625,5.865,2.625c0.224,0,0.54-0.037,0.95-0.111 c0.408-0.076,0.688-0.113,0.838-0.113c3.127-0.818,5.547-2.828,7.26-6.031c0.82-1.415,1.434-2.96,1.844-4.636 c0.41-1.675,0.633-3.035,0.67-4.078c0.037-1.042,0.057-2.755,0.057-5.138v-2.793c-4.32,0-7.596,0.298-9.83,0.894 C56.338,42.077,53.062,46.21,53.062,52.615L53.062,52.615z"
+            />
+            <path
+              fill="#FF9900"
+              d="M99.979,88.586c0.15-0.299,0.373-0.596,0.672-0.895c1.861-1.266,3.648-2.121,5.361-2.568 c2.83-0.744,5.586-1.154,8.266-1.229c0.746-0.076,1.453-0.037,2.123,0.111c3.352,0.297,5.361,0.857,6.033,1.676 c0.297,0.447,0.445,1.117,0.445,2.01v0.783c0,2.605-0.707,5.678-2.121,9.215c-1.416,3.537-3.389,6.387-5.922,8.547 c-0.371,0.297-0.707,0.445-1.004,0.445c-0.15,0-0.299-0.037-0.447-0.111c-0.447-0.223-0.559-0.633-0.336-1.229 c2.756-6.479,4.133-10.984,4.133-13.518c0-0.818-0.148-1.414-0.445-1.787c-0.746-0.893-2.83-1.34-6.256-1.34 c-1.268,0-2.756,0.074-4.469,0.223c-1.861,0.225-3.574,0.447-5.139,0.672c-0.447,0-0.744-0.076-0.895-0.225 c-0.148-0.148-0.186-0.297-0.111-0.447C99.867,88.846,99.904,88.734,99.979,88.586L99.979,88.586z M0.223,86.688 c0.373-0.596,0.968-0.633,1.788-0.113c18.618,10.799,38.875,16.199,60.769,16.199c14.598,0,29.008-2.719,43.232-8.156 c0.371-0.148,0.912-0.371,1.619-0.67c0.709-0.297,1.211-0.521,1.508-0.67c1.117-0.447,1.992-0.223,2.625,0.67 c0.635,0.895,0.43,1.713-0.613,2.457c-1.342,0.969-3.055,2.086-5.139,3.352c-6.404,3.799-13.555,6.74-21.449,8.826 c-7.893,2.086-15.602,3.127-23.123,3.127c-11.618,0-22.603-2.029-32.954-6.088C18.134,101.563,8.862,95.846,0.67,88.475 C0.223,88.102,0,87.729,0,87.357C0,87.133,0.074,86.91,0.223,86.688L0.223,86.688z"
+            />
+          </svg>
+          <svg
+            class="checkmark"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 52 52"
+          >
+            <circle
+              class="checkmark__circle"
+              cx="26"
+              cy="26"
+              r="25"
+              fill="none"
+            />
+            <path
+              class="checkmark__check"
+              fill="none"
+              d="M14.1 27.2l7.1 7.2 16.7-16.8"
+            />
+          </svg>
+        </button>
+
+        <button
+          class="pinterest-btn"
+          onclick="searchOn('https://in.pinterest.com/search/pins/?q=', this)"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+            <circle cx="24" cy="24" r="20" fill="#E60023"></circle>
+            <path
+              fill="#FFF"
+              d="M24.4439087,11.4161377c-8.6323242,0-13.2153931,5.7946167-13.2153931,12.1030884 c0,2.9338379,1.5615234,6.5853882,4.0599976,7.7484131c0.378418,0.1762085,0.581543,0.1000366,0.668457-0.2669067 c0.0668945-0.2784424,0.4038086-1.6369019,0.5553589-2.2684326c0.0484619-0.2015381,0.0246582-0.3746338-0.1384277-0.5731201 c-0.8269653-1.0030518-1.4884644-2.8461304-1.4884644-4.5645752c0-4.4115601,3.3399658-8.6799927,9.0299683-8.6799927 c4.9130859,0,8.3530884,3.3484497,8.3530884,8.1369019c0,5.4099731-2.7322998,9.1584473-6.2869263,9.1584473 c-1.9630737,0-3.4330444-1.6238403-2.9615479-3.6153564c0.5654297-2.3769531,1.6569214-4.9415283,1.6569214-6.6584473 c0-1.5354004-0.8230591-2.8169556-2.5299683-2.8169556c-2.006958,0-3.6184692,2.0753784-3.6184692,4.8569336 c0,1.7700195,0.5984497,2.9684448,0.5984497,2.9684448s-1.9822998,8.3815308-2.3453979,9.9415283 c-0.4019775,1.72229-0.2453003,4.1416016-0.0713501,5.7233887l0,0c0.4511108,0.1768799,0.9024048,0.3537598,1.3687744,0.4981079l0,0 c0.8168945-1.3278198,2.0349731-3.5056763,2.4864502-5.2422485c0.2438354-0.9361572,1.2468872-4.7546387,1.2468872-4.7546387 c0.6515503,1.2438965,2.5561523,2.296936,4.5831299,2.296936c6.0314941,0,10.378418-5.546936,10.378418-12.4400024 C36.7738647,16.3591919,31.3823242,11.4161377,24.4439087,11.4161377z"
+            ></path>
+          </svg>
+          <svg
+            class="checkmark"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 52 52"
+          >
+            <circle
+              class="checkmark__circle"
+              cx="26"
+              cy="26"
+              r="25"
+              fill="none"
+            />
+            <path
+              class="checkmark__check"
+              fill="none"
+              d="M14.1 27.2l7.1 7.2 16.7-16.8"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <div class="yt-embed">
+        <iframe
+          width="200"
+          height="113"
+          src="https://www.youtube.com/embed/oe4XJ851oOk?enablejsapi=1&rel=0&loop=1&playsinline=1&modestbranding=1&autoplay=0"
+          frameborder="0"
+          allow="
+            accelerometer;
+            autoplay;
+            encrypted-media;
+            gyroscope;
+            picture-in-picture;
+          "
+          allowfullscreen
+        ></iframe>
+      </div>
+      <div class="quote" id="quoteText"></div>
+      <div class="footer">made with ❤️ by zeet</div>
+    </div>
+
+    <script>
+      // ========== QUOTE OF THE DAY ==========
+      const quotes = [
+        "to become who you want to be you need to sacrifice who you are",
+        "have confidence in the very air that surrounds you",
+        "you can't fix everything at once but you can fix something right now",
+        "needing nothing attracts everything",
+        "who am i to judge when i myself walk as an imperfect man",
+        "you cannot suffer the past and future, because they do not exist",
+        "in the war of ego the loser always wins",
+        "being angry is like drinking poison and expecting the other person to die",
+        "to be a star you must burn",
+        "observe, but don't absorb",
+        "the world is cruel, therefore i won't be",
+        "comfort is the worst addiction",
+        "a person chosen by god will never be chosen by humans",
+      ];
+
+      function getDayOfYear() {
+        const now = new Date();
+        const start = new Date(now.getFullYear(), 0, 0);
+        const diff = now - start;
+        const oneDay = 1000 * 60 * 60 * 24;
+        return Math.floor(diff / oneDay);
+      }
+
+      // Set quote based on day of year
+      const quoteIndex = getDayOfYear() % quotes.length;
+      document.getElementById("quoteText").textContent = quotes[quoteIndex];
+
+      // ========== SEARCH ANIMATION LOGIC ==========
+      const searchForm = document.querySelector(".search-form");
+      const searchInput = document.getElementById("searchInput");
+      let originalPlaceholder = "";
+
+      function searchOn(url, buttonElement) {
+        const query = searchInput.value.trim();
+        if (!query) return;
+
+        // Trigger search bar animation
+        triggerSearchAnimation();
+
+        // Trigger checkmark animation on button
+        if (buttonElement) {
+          buttonElement.classList.add("active");
+        }
+
+        // Navigate after animation completes
+        setTimeout(() => {
+          window.location.href = url + encodeURIComponent(query);
+        }, 1200);
+      }
+
+      // Handle search with animation
+      function handleSearch(event) {
+        event.preventDefault();
+        const query = searchInput.value.trim();
+
+        if (!query) return false;
+
+        // Trigger search animation
+        triggerSearchAnimation();
+
+        // Check if it's a URL
+        const urlPattern = /^(https?:\/\/)|(www\.)|(\w+\.\w+)/;
+
+        setTimeout(() => {
+          if (urlPattern.test(query)) {
+            const url = query.startsWith("http") ? query : "https://" + query;
+            window.location.href = url;
+          } else {
+            // Search on Google
+            window.location.href =
+              "https://www.google.com/search?q=" + encodeURIComponent(query);
+          }
+        }, 300);
+
+        return false;
+      }
+
+      // Search animation function
+      function triggerSearchAnimation() {
+        searchForm.classList.add("searching");
+        originalPlaceholder = searchInput.placeholder;
+        searchInput.value = "Searching...";
+        searchInput.style.pointerEvents = "none";
+      }
+
+      //Auto Focus
+      document.querySelector(".container").addEventListener("click", () => {
+        searchInput.focus();
+      });
+      // Prevent auto focus on these
+      document.querySelectorAll(".social-button,.search-form").forEach((e) => {
+        e.addEventListener("click", () => {
+          e.stopPropagation();
+        });
+      });
+    </script>
+  </body>
+</html>
