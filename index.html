@@ -491,6 +491,106 @@
         opacity: 0.85;
       }
 
+      .yt-embed-wrapper {
+        position: relative;
+        display: inline-block;
+      }
+
+      .playlist-btn {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(0, 212, 255, 0.4);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        transition: all 0.2s ease;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .playlist-btn:hover {
+        background: rgba(0, 212, 255, 0.2);
+        border-color: #00d4ff;
+      }
+
+      .playlist-btn svg {
+        width: 13px;
+        height: 13px;
+        color: #00d4ff;
+      }
+
+      .playlist-popup {
+        display: none;
+        position: absolute;
+        bottom: calc(100% + 8px);
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(10, 14, 39, 0.95);
+        border: 1px solid rgba(0, 212, 255, 0.4);
+        border-radius: 10px;
+        padding: 10px;
+        width: 220px;
+        z-index: 20;
+        backdrop-filter: blur(10px);
+      }
+
+      .playlist-popup.open {
+        display: block;
+      }
+
+      .playlist-popup input {
+        width: 100%;
+        background: transparent;
+        border: 1px solid rgba(0, 212, 255, 0.4);
+        border-radius: 6px;
+        padding: 7px 10px;
+        color: #fff;
+        font-size: 12px;
+        outline: none;
+        box-sizing: border-box;
+      }
+
+      .playlist-popup input::placeholder {
+        color: rgba(0, 212, 255, 0.5);
+      }
+
+      .playlist-popup-actions {
+        display: flex;
+        gap: 6px;
+        margin-top: 7px;
+      }
+
+      .playlist-popup-actions button {
+        flex: 1;
+        padding: 6px;
+        border-radius: 6px;
+        border: none;
+        font-size: 11px;
+        cursor: pointer;
+        transition: opacity 0.2s;
+      }
+
+      .playlist-confirm {
+        background: #00d4ff;
+        color: #0a0e27;
+        font-weight: 600;
+      }
+
+      .playlist-cancel {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+      }
+
+      .playlist-popup-actions button:hover {
+        opacity: 0.8;
+      }
+
       .quote {
         text-align: center;
         margin-top: 0;
@@ -643,20 +743,60 @@
       </div>
 
       <div class="yt-embed">
-        <iframe
-          width="200"
-          height="113"
-          src="https://www.youtube.com/embed/oe4XJ851oOk?enablejsapi=1&rel=0&loop=1&playsinline=1&modestbranding=1&autoplay=0"
-          frameborder="0"
-          allow="
-            accelerometer;
-            autoplay;
-            encrypted-media;
-            gyroscope;
-            picture-in-picture;
-          "
-          allowfullscreen
-        ></iframe>
+        <div class="yt-embed-wrapper">
+          <iframe
+            id="yt-iframe"
+            width="200"
+            height="113"
+            src="https://www.youtube.com/embed/oe4XJ851oOk?enablejsapi=1&rel=0&loop=1&playsinline=1&modestbranding=1&autoplay=0"
+            frameborder="0"
+            allow="
+              accelerometer;
+              autoplay;
+              encrypted-media;
+              gyroscope;
+              picture-in-picture;
+            "
+            allowfullscreen
+          ></iframe>
+          <button
+            class="playlist-btn"
+            onclick="togglePlaylistPopup(event)"
+            title="Load playlist"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="8" y1="6" x2="21" y2="6" />
+              <line x1="8" y1="12" x2="21" y2="12" />
+              <line x1="8" y1="18" x2="21" y2="18" />
+              <polyline points="3 6 4 7 6 5" />
+              <polyline points="3 12 4 13 6 11" />
+              <polyline points="3 18 4 19 6 17" />
+            </svg>
+          </button>
+          <div class="playlist-popup" id="playlistPopup">
+            <input
+              type="text"
+              id="playlistInput"
+              placeholder="Paste YouTube playlist URL"
+            />
+            <div class="playlist-popup-actions">
+              <button class="playlist-confirm" onclick="loadPlaylist()">
+                Load
+              </button>
+              <button class="playlist-cancel" onclick="closePlaylistPopup()">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="quote" id="quoteText"></div>
       <div class="footer">made with ❤️ by zeet</div>
@@ -759,6 +899,50 @@
         e.addEventListener("click", () => {
           e.stopPropagation();
         });
+      });
+
+      // ========== PLAYLIST LOADER ==========
+      function togglePlaylistPopup(e) {
+        e.stopPropagation();
+        document.getElementById("playlistPopup").classList.toggle("open");
+        setTimeout(() => document.getElementById("playlistInput").focus(), 50);
+      }
+
+      function closePlaylistPopup() {
+        document.getElementById("playlistPopup").classList.remove("open");
+      }
+
+      function loadPlaylist() {
+        const raw = document.getElementById("playlistInput").value.trim();
+        const match = raw.match(/[?&]list=([a-zA-Z0-9_-]+)/);
+        if (!match) {
+          document.getElementById("playlistInput").style.borderColor =
+            "rgba(255,80,80,0.7)";
+          setTimeout(
+            () =>
+              (document.getElementById("playlistInput").style.borderColor = ""),
+            1200,
+          );
+          return;
+        }
+        const listId = match[1];
+        document.getElementById("yt-iframe").src =
+          "https://www.youtube.com/embed/?listType=playlist&list=" +
+          listId +
+          "&enablejsapi=1&rel=0&loop=1&playsinline=1&modestbranding=1&autoplay=1";
+        closePlaylistPopup();
+        document.getElementById("playlistInput").value = "";
+      }
+
+      // Close popup when tapping outside
+      document.addEventListener("click", (e) => {
+        const popup = document.getElementById("playlistPopup");
+        if (
+          popup.classList.contains("open") &&
+          !popup.closest(".yt-embed-wrapper").contains(e.target)
+        ) {
+          closePlaylistPopup();
+        }
       });
     </script>
   </body>
