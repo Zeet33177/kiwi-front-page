@@ -19,7 +19,8 @@
         font-family:
           -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
           Cantarell, sans-serif;
-        background: #0a0e27 url(images/wallpaper1.gif) no-repeat center center fixed;
+        background: #0a0e27 url(images/wallpaper1.gif) no-repeat center center
+          fixed;
         background-size: cover;
         min-height: 100vh;
         padding: 20px;
@@ -383,116 +384,131 @@
         background-position: 100% 50%;
       }
 
-      .yt-embed {
+      /* ========== BACKGROUND VIDEO IFRAME ========== */
+      .bg-iframe {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100vw;
+        height: 56.25vw;
+        min-height: 100vh;
+        min-width: 177.78vh;
+        pointer-events: none;
+        z-index: -1;
+        border: none;
+      }
+
+      .bg-iframe.active {
+        display: block;
+      }
+
+      /* ========== MUSIC BUTTON ========== */
+      .music-btn-wrap {
+        position: relative;
         display: flex;
         justify-content: center;
         margin-top: auto;
         margin-bottom: 10px;
       }
 
-      .yt-embed iframe {
-        border-radius: 10px;
-        opacity: 0.85;
-      }
-
-      .yt-embed-wrapper {
-        position: relative;
-        display: inline-block;
-      }
-
-      .playlist-btn {
-        position: absolute;
-        top: 6px;
-        right: 6px;
-        width: 26px;
-        height: 26px;
-        border-radius: 50%;
-        background: rgba(0, 0, 0, 0.6);
-        border: 1px solid rgba(0, 212, 255, 0.4);
+      .music-btn {
+        width: 48px;
+        height: 48px;
+        border-radius: 6px;
+        background: rgba(0, 0, 0, 0.5);
+        border: 2px solid rgba(255, 255, 255, 0.3);
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        z-index: 10;
-        transition: all 0.2s ease;
+        font-family: "VT323", monospace;
+        font-size: 26px;
+        color: #fff;
+        transition: border-color 0.15s;
         -webkit-tap-highlight-color: transparent;
       }
 
-      .playlist-btn:hover {
-        background: rgba(0, 212, 255, 0.2);
-        border-color: #00d4ff;
+      .music-btn:hover {
+        border-color: #fff;
       }
 
-      .playlist-btn svg {
-        width: 13px;
-        height: 13px;
-        color: #00d4ff;
+      .music-btn.playing {
+        border-color: #fff;
+        color: #fff;
       }
 
-      .playlist-popup {
+      /* ========== MUSIC POPUP ========== */
+      .music-popup {
         display: none;
         position: absolute;
-        bottom: calc(100% + 8px);
+        bottom: calc(100% + 10px);
         left: 50%;
         transform: translateX(-50%);
-        background: rgba(10, 14, 39, 0.95);
-        border: 1px solid rgba(0, 212, 255, 0.4);
-        border-radius: 10px;
-        padding: 10px;
-        width: 220px;
+        background: rgba(5, 9, 28, 0.96);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        padding: 12px;
+        width: 250px;
         z-index: 20;
         backdrop-filter: blur(10px);
       }
 
-      .playlist-popup.open {
+      .music-popup.open {
         display: block;
       }
 
-      .playlist-popup input {
+      .music-popup input {
         width: 100%;
         background: transparent;
-        border: 1px solid rgba(0, 212, 255, 0.4);
-        border-radius: 6px;
-        padding: 7px 10px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 8px 10px;
         color: #fff;
-        font-size: 12px;
+        font-size: 16px;
+        font-family: "VT323", monospace;
         outline: none;
         box-sizing: border-box;
       }
 
-      .playlist-popup input::placeholder {
-        color: rgba(0, 212, 255, 0.5);
+      .music-popup input::placeholder {
+        color: rgba(255, 255, 255, 0.3);
       }
 
-      .playlist-popup-actions {
+      .music-popup-actions {
         display: flex;
         gap: 6px;
-        margin-top: 7px;
+        margin-top: 8px;
       }
 
-      .playlist-popup-actions button {
+      .music-popup-actions button {
         flex: 1;
-        padding: 6px;
-        border-radius: 6px;
+        padding: 7px;
         border: none;
-        font-size: 20px;
+        font-size: 18px;
+        font-family: "VT323", monospace;
         cursor: pointer;
-        transition: opacity 0.2s;
       }
 
-      .playlist-confirm {
-        background: #00d4ff;
-        color: #0a0e27;
-        font-weight: 600;
+      .music-confirm {
+        background: #fff;
+        color: #05091c;
       }
 
-      .playlist-cancel {
+      .music-cancel {
         background: rgba(255, 255, 255, 0.1);
         color: #fff;
       }
 
-      .playlist-popup-actions button:hover {
-        opacity: 0.8;
+      .music-stop {
+        background: rgba(255, 80, 80, 0.2);
+        color: #ff8080;
+        width: 100%;
+        margin-top: 6px;
+        display: none;
+      }
+
+      .music-stop.visible {
+        display: block;
       }
 
       .quote {
@@ -542,7 +558,7 @@
         right: 0;
         background: rgba(5, 9, 28, 0.92);
         backdrop-filter: blur(10px);
-        border-top: 2px solid rgba(255,255,255,0.15);
+        border-top: 2px solid rgba(255, 255, 255, 0.15);
         padding: 16px;
         z-index: 100;
         transform: translateY(100%);
@@ -557,7 +573,7 @@
       .wp-picker-label {
         font-family: "VT323", monospace;
         font-size: 18px;
-        color: rgba(255,255,255,0.5);
+        color: rgba(255, 255, 255, 0.5);
         text-align: center;
         margin-bottom: 12px;
         letter-spacing: 2px;
@@ -585,7 +601,7 @@
       }
 
       .wp-thumb:hover {
-        border-color: rgba(255,255,255,0.5);
+        border-color: rgba(255, 255, 255, 0.5);
       }
 
       .wp-darkness {
@@ -598,22 +614,22 @@
       .wp-darkness-label {
         font-family: "VT323", monospace;
         font-size: 16px;
-        color: rgba(255,255,255,0.5);
+        color: rgba(255, 255, 255, 0.5);
         letter-spacing: 1px;
         white-space: nowrap;
       }
 
-      .wp-darkness input[type=range] {
+      .wp-darkness input[type="range"] {
         flex: 1;
         -webkit-appearance: none;
         appearance: none;
         height: 4px;
-        background: rgba(255,255,255,0.2);
+        background: rgba(255, 255, 255, 0.2);
         outline: none;
         border-radius: 0;
       }
 
-      .wp-darkness input[type=range]::-webkit-slider-thumb {
+      .wp-darkness input[type="range"]::-webkit-slider-thumb {
         -webkit-appearance: none;
         width: 14px;
         height: 14px;
@@ -622,7 +638,7 @@
         border-radius: 0;
       }
 
-      .wp-darkness input[type=range]::-moz-range-thumb {
+      .wp-darkness input[type="range"]::-moz-range-thumb {
         width: 14px;
         height: 14px;
         background: #cccccc;
@@ -633,7 +649,7 @@
     </style>
   </head>
   <body>
-    <div class="gradient-bg" style="display:none"></div>
+    <div class="gradient-bg" style="display: none"></div>
     <div class="container">
       <div class="search-box">
         <form class="search-form" onsubmit="return handleSearch(event);">
@@ -679,78 +695,101 @@
         </button>
       </div>
 
-      <div class="yt-embed">
-        <div class="yt-embed-wrapper">
-          <iframe
-            id="yt-iframe"
-            width="320"
-            height="180"
-            src="https://www.youtube.com/embed/oe4XJ851oOk?enablejsapi=1&rel=0&loop=1&playsinline=1&modestbranding=1&autoplay=0&vq=tiny"
-            frameborder="0"
-            allow="
-              accelerometer;
-              autoplay;
-              encrypted-media;
-              gyroscope;
-              picture-in-picture;
-            "
-            allowfullscreen
-          ></iframe>
-          <button
-            class="playlist-btn"
-            onclick="togglePlaylistPopup(event)"
-            title="Load playlist"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <line x1="8" y1="6" x2="21" y2="6" />
-              <line x1="8" y1="12" x2="21" y2="12" />
-              <line x1="8" y1="18" x2="21" y2="18" />
-              <polyline points="3 6 4 7 6 5" />
-              <polyline points="3 12 4 13 6 11" />
-              <polyline points="3 18 4 19 6 17" />
-            </svg>
-          </button>
-          <div class="playlist-popup" id="playlistPopup">
-            <input
-              type="text"
-              id="playlistInput"
-              placeholder="Paste YouTube playlist URL"
-            />
-            <div class="playlist-popup-actions">
-              <button class="playlist-confirm" onclick="loadPlaylist()">
-                Load
-              </button>
-              <button class="playlist-cancel" onclick="closePlaylistPopup()">
-                Cancel
-              </button>
-            </div>
+      <div class="music-btn-wrap">
+        <button
+          class="music-btn"
+          id="musicBtn"
+          onclick="toggleMusicPopup(event)"
+        >
+          ♫
+        </button>
+        <div class="music-popup" id="musicPopup">
+          <input
+            type="text"
+            id="musicInput"
+            placeholder="Paste YouTube playlist URL"
+          />
+          <div class="music-popup-actions">
+            <button class="music-confirm" onclick="loadMusic()">PLAY</button>
+            <button class="music-cancel" onclick="closeMusicPopup()">
+              CANCEL
+            </button>
           </div>
+          <button class="music-stop" id="musicStop" onclick="stopMusic()">
+            ■ STOP
+          </button>
         </div>
       </div>
       <div class="quote" id="quoteText"></div>
-      <div class="footer" onclick="toggleWallpaperPicker()">made with ❤️ by zeet</div>
+      <div
+        class="footer"
+        onclick="
+          toggleWallpaperPicker();
+          event.stopPropagation();
+        "
+      >
+        made with ❤️ by zeet
+      </div>
     </div>
+
+    <iframe
+      id="bgIframe"
+      class="bg-iframe"
+      frameborder="0"
+      allow="
+        accelerometer;
+        autoplay;
+        encrypted-media;
+        gyroscope;
+        picture-in-picture;
+      "
+      allowfullscreen
+    ></iframe>
 
     <div class="wp-picker" id="wpPicker">
       <div class="wp-picker-label">WALLPAPER</div>
       <div class="wp-thumbs">
-        <div class="wp-thumb" id="wp-1" style="background-image:url(images/wallpaper1.gif)" onclick="setWallpaper(1)"></div>
-        <div class="wp-thumb" id="wp-2" style="background-image:url(images/wallpaper2.gif)" onclick="setWallpaper(2)"></div>
-        <div class="wp-thumb" id="wp-3" style="background-image:url(images/wallpaper3.gif)" onclick="setWallpaper(3)"></div>
-        <div class="wp-thumb" id="wp-4" style="background-image:url(images/wallpaper4.webp)" onclick="setWallpaper(4)"></div>
-        <div class="wp-thumb" id="wp-5" style="background-image:url(images/wallpaper5.gif)" onclick="setWallpaper(5)"></div>
+        <div
+          class="wp-thumb"
+          id="wp-1"
+          style="background-image: url(images/wallpaper1.gif)"
+          onclick="setWallpaper(1)"
+        ></div>
+        <div
+          class="wp-thumb"
+          id="wp-2"
+          style="background-image: url(images/wallpaper2.gif)"
+          onclick="setWallpaper(2)"
+        ></div>
+        <div
+          class="wp-thumb"
+          id="wp-3"
+          style="background-image: url(images/wallpaper3.gif)"
+          onclick="setWallpaper(3)"
+        ></div>
+        <div
+          class="wp-thumb"
+          id="wp-4"
+          style="background-image: url(images/wallpaper4.webp)"
+          onclick="setWallpaper(4)"
+        ></div>
+        <div
+          class="wp-thumb"
+          id="wp-5"
+          style="background-image: url(images/wallpaper5.gif)"
+          onclick="setWallpaper(5)"
+        ></div>
       </div>
       <div class="wp-darkness">
         <span class="wp-darkness-label">DARK</span>
-        <input type="range" id="darknessSlider" min="0" max="90" value="55" oninput="setDarkness(this.value)" />
+        <input
+          type="range"
+          id="darknessSlider"
+          min="0"
+          max="90"
+          value="55"
+          oninput="setDarkness(this.value)"
+        />
       </div>
     </div>
 
@@ -842,98 +881,127 @@
         searchInput.focus();
       });
       // Prevent auto focus on these
-      document.querySelectorAll(".social-button,.search-form").forEach((e) => {
-        e.addEventListener("click", () => {
-          e.stopPropagation();
+      document
+        .querySelectorAll(
+          ".social-button,.search-form,.footer,.music-btn-wrap,.wp-picker",
+        )
+        .forEach((e) => {
+          e.addEventListener("click", (ev) => {
+            ev.stopPropagation();
+          });
         });
-      });
 
-      // ========== PLAYLIST LOADER ==========
-      function togglePlaylistPopup(e) {
+      // ========== MUSIC PLAYER ==========
+      function toggleMusicPopup(e) {
         e.stopPropagation();
-        document.getElementById("playlistPopup").classList.toggle("open");
-        setTimeout(() => document.getElementById("playlistInput").focus(), 50);
+        document.getElementById("musicPopup").classList.toggle("open");
+        setTimeout(() => document.getElementById("musicInput").focus(), 50);
       }
 
-      function closePlaylistPopup() {
-        document.getElementById("playlistPopup").classList.remove("open");
+      function closeMusicPopup() {
+        document.getElementById("musicPopup").classList.remove("open");
       }
 
-      function loadPlaylist() {
-        const raw = document.getElementById("playlistInput").value.trim();
+      function loadMusic() {
+        const raw = document.getElementById("musicInput").value.trim();
         const match = raw.match(/[?&]list=([a-zA-Z0-9_-]+)/);
         if (!match) {
-          document.getElementById("playlistInput").style.borderColor =
+          document.getElementById("musicInput").style.borderColor =
             "rgba(255,80,80,0.7)";
           setTimeout(
             () =>
-              (document.getElementById("playlistInput").style.borderColor = ""),
+              (document.getElementById("musicInput").style.borderColor = ""),
             1200,
           );
           return;
         }
         const listId = match[1];
-        document.getElementById("yt-iframe").src =
+        const iframe = document.getElementById("bgIframe");
+        iframe.src =
           "https://www.youtube.com/embed/?listType=playlist&list=" +
           listId +
           "&enablejsapi=1&rel=0&playsinline=1&modestbranding=1&autoplay=1&index=0&vq=tiny";
-        closePlaylistPopup();
-        document.getElementById("playlistInput").value = "";
+        iframe.classList.add("active");
+        document.body.style.backgroundImage = "none";
+        document.getElementById("musicBtn").classList.add("playing");
+        document.getElementById("musicStop").classList.add("visible");
+        closeMusicPopup();
+        document.getElementById("musicInput").value = "";
       }
 
-      // Close popup when tapping outside
+      function stopMusic() {
+        const iframe = document.getElementById("bgIframe");
+        iframe.src = "";
+        iframe.classList.remove("active");
+        document.getElementById("musicBtn").classList.remove("playing");
+        document.getElementById("musicStop").classList.remove("visible");
+        const savedWp = localStorage.getItem("wallpaper") || 1;
+        setWallpaper(savedWp);
+        closeMusicPopup();
+      }
+
+      // Close music popup when tapping outside
       document.addEventListener("click", (e) => {
-        const popup = document.getElementById("playlistPopup");
+        const popup = document.getElementById("musicPopup");
         if (
           popup.classList.contains("open") &&
-          !popup.closest(".yt-embed-wrapper").contains(e.target)
+          !popup.closest(".music-btn-wrap").contains(e.target)
         ) {
-          closePlaylistPopup();
+          closeMusicPopup();
         }
       });
 
       // ========== WALLPAPER PICKER ==========
       const wallpapers = {
-        1: 'images/wallpaper1.gif',
-        2: 'images/wallpaper2.gif',
-        3: 'images/wallpaper3.gif',
-        4: 'images/wallpaper4.webp',
-        5: 'images/wallpaper5.gif',
+        1: "images/wallpaper1.gif",
+        2: "images/wallpaper2.gif",
+        3: "images/wallpaper3.gif",
+        4: "images/wallpaper4.webp",
+        5: "images/wallpaper5.gif",
       };
 
       function setWallpaper(n) {
+        const iframe = document.getElementById("bgIframe");
+        iframe.src = "";
+        iframe.classList.remove("active");
+        document.getElementById("musicBtn").classList.remove("playing");
+        document.getElementById("musicStop").classList.remove("visible");
         document.body.style.backgroundImage = `url(${wallpapers[n]})`;
-        document.querySelectorAll('.wp-thumb').forEach(t => t.classList.remove('active'));
-        document.getElementById('wp-' + n).classList.add('active');
-        localStorage.setItem('wallpaper', n);
+        document
+          .querySelectorAll(".wp-thumb")
+          .forEach((t) => t.classList.remove("active"));
+        document.getElementById("wp-" + n).classList.add("active");
+        localStorage.setItem("wallpaper", n);
       }
 
       function setDarkness(value) {
-        document.body.style.setProperty('--overlay-opacity', value / 100);
-        localStorage.setItem('darkness', value);
+        document.body.style.setProperty("--overlay-opacity", value / 100);
+        localStorage.setItem("darkness", value);
       }
 
       function toggleWallpaperPicker() {
-        document.getElementById('wpPicker').classList.toggle('open');
+        document.getElementById("wpPicker").classList.toggle("open");
       }
 
       // Close picker when tapping outside
-      document.addEventListener('click', (e) => {
-        const picker = document.getElementById('wpPicker');
-        if (picker.classList.contains('open') &&
-            !picker.contains(e.target) &&
-            !e.target.closest('.footer')) {
-          picker.classList.remove('open');
+      document.addEventListener("click", (e) => {
+        const picker = document.getElementById("wpPicker");
+        if (
+          picker.classList.contains("open") &&
+          !picker.contains(e.target) &&
+          !e.target.closest(".footer")
+        ) {
+          picker.classList.remove("open");
         }
       });
 
       // Load saved wallpaper
-      const savedWp = localStorage.getItem('wallpaper') || 1;
+      const savedWp = localStorage.getItem("wallpaper") || 1;
       setWallpaper(savedWp);
 
       // Load saved darkness
-      const savedDarkness = localStorage.getItem('darkness') || 55;
-      document.getElementById('darknessSlider').value = savedDarkness;
+      const savedDarkness = localStorage.getItem("darkness") || 55;
+      document.getElementById("darknessSlider").value = savedDarkness;
       setDarkness(savedDarkness);
     </script>
   </body>
