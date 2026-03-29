@@ -511,6 +511,42 @@
         display: block;
       }
 
+      /* ========== PLAYBACK CONTROLS ========== */
+      .player-controls {
+        display: none;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .player-controls.visible {
+        display: flex;
+      }
+
+      .player-btn {
+        width: 48px;
+        height: 48px;
+        border-radius: 6px;
+        background: rgba(0, 0, 0, 0.5);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "VT323", monospace;
+        font-size: 22px;
+        color: #fff;
+        transition: border-color 0.15s;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .player-btn:hover {
+        border-color: #fff;
+      }
+
+      .player-btn.play-pause {
+        font-size: 26px;
+      }
+
       .quote {
         text-align: center;
         margin-top: 0;
@@ -703,6 +739,12 @@
         >
           ♫
         </button>
+        <div class="player-controls" id="playerControls">
+          <button class="player-btn" onclick="prevTrack()" title="Previous">⏮</button>
+          <button class="player-btn play-pause" id="playPauseBtn" onclick="togglePlayPause()" title="Play/Pause">⏸</button>
+          <button class="player-btn" onclick="nextTrack()" title="Next">⏭</button>
+          <button class="player-btn" onclick="stopMusic()" title="Stop" style="font-size:18px; color:#ff8080; border-color:rgba(255,80,80,0.4);">■</button>
+        </div>
         <div class="music-popup" id="musicPopup">
           <input
             type="text"
@@ -715,28 +757,13 @@
               CANCEL
             </button>
           </div>
-          <button class="music-stop" id="musicStop" onclick="stopMusic()">
-            ■ STOP
-          </button>
         </div>
       </div>
       <div class="quote" id="quoteText"></div>
       <div class="footer" onclick="toggleWallpaperPicker()">made with ❤️ by zeet</div>
     </div>
 
-    <iframe
-      id="bgIframe"
-      class="bg-iframe"
-      frameborder="0"
-      allow="
-        accelerometer;
-        autoplay;
-        encrypted-media;
-        gyroscope;
-        picture-in-picture;
-      "
-      allowfullscreen
-    ></iframe>
+    <div id="bgIframe" class="bg-iframe"></div>
 
     <div class="wp-picker" id="wpPicker">
       <div class="wp-picker-label">WALLPAPER</div>
@@ -869,6 +896,48 @@
       }
 
 
+      // ========== YOUTUBE IFRAME API ==========
+      let ytPlayer = null;
+      let isPlaying = false;
+      let pendingListId = null;
+
+      window.onYouTubeIframeAPIReady = function () {
+        if (pendingListId) _createPlayer(pendingListId);
+      };
+
+      function _loadYTApi() {
+        if (window.YT && window.YT.Player) return;
+        const tag = document.createElement("script");
+        tag.src = "https://www.youtube.com/iframe_api";
+        document.head.appendChild(tag);
+      }
+
+      function _createPlayer(listId) {
+        document.getElementById("bgIframe").classList.add("active");
+        document.body.style.backgroundImage = "none";
+        ytPlayer = new YT.Player("bgIframe", {
+          width: "100%",
+          height: "100%",
+          playerVars: {
+            listType: "playlist",
+            list: listId,
+            autoplay: 1,
+            controls: 0,
+            rel: 0,
+            playsinline: 1,
+            modestbranding: 1,
+            vq: "tiny",
+          },
+          events: {
+            onReady: (e) => { e.target.playVideo(); },
+            onStateChange: (e) => {
+              isPlaying = e.data === YT.PlayerState.PLAYING;
+              document.getElementById("playPauseBtn").textContent = isPlaying ? "⏸" : "▶";
+            },
+          },
+        });
+      }
+
       // ========== MUSIC PLAYER ==========
       function toggleMusicPopup(e) {
         e.stopPropagation();
@@ -894,28 +963,58 @@
           return;
         }
         const listId = match[1];
-        const iframe = document.getElementById("bgIframe");
-        iframe.classList.add("active");
-        document.body.style.backgroundImage = "none";
-        iframe.src =
-          "https://www.youtube.com/embed/?listType=playlist&list=" +
-          listId +
-          "&enablejsapi=1&rel=0&playsinline=1&modestbranding=1&autoplay=1&index=0&vq=tiny";
-        document.getElementById("musicBtn").classList.add("playing");
-        document.getElementById("musicStop").classList.add("visible");
+
+        // Show playback controls, hide ♫ button
+        document.getElementById("musicBtn").style.display = "none";
+        document.getElementById("playerControls").classList.add("visible");
+
+        if (ytPlayer && ytPlayer.loadPlaylist) {
+          ytPlayer.loadPlaylist({ listType: "playlist", list: listId, index: 0 });
+          document.getElementById("bgIframe").classList.add("active");
+          document.body.style.backgroundImage = "none";
+        } else {
+          pendingListId = listId;
+          _loadYTApi();
+          // If API already ready (reload scenario)
+          if (window.YT && window.YT.Player) _createPlayer(listId);
+        }
+
         closeMusicPopup();
         document.getElementById("musicInput").value = "";
       }
 
       function stopMusic() {
-        const iframe = document.getElementById("bgIframe");
-        iframe.src = "";
-        iframe.classList.remove("active");
-        document.getElementById("musicBtn").classList.remove("playing");
-        document.getElementById("musicStop").classList.remove("visible");
+        if (ytPlayer && ytPlayer.stopVideo) ytPlayer.stopVideo();
+        if (ytPlayer && ytPlayer.destroy) { ytPlayer.destroy(); ytPlayer = null; }
+        // Replace the div with a fresh one for next load
+        const old = document.getElementById("bgIframe");
+        const fresh = document.createElement("div");
+        fresh.id = "bgIframe";
+        fresh.className = "bg-iframe";
+        old.replaceWith(fresh);
+
+        document.getElementById("musicBtn").style.display = "";
+        document.getElementById("playerControls").classList.remove("visible");
+        document.getElementById("playPauseBtn").textContent = "⏸";
+        isPlaying = false;
+
         const savedWp = localStorage.getItem("wallpaper") || 1;
         setWallpaper(savedWp);
         closeMusicPopup();
+      }
+
+      function togglePlayPause() {
+        if (!ytPlayer) return;
+        if (isPlaying) { ytPlayer.pauseVideo(); }
+        else { ytPlayer.playVideo(); }
+      }
+
+      function prevTrack() {
+        if (ytPlayer && ytPlayer.previousVideo) ytPlayer.previousVideo();
+      }
+
+      function nextTrack() {
+        if (ytPlayer && ytPlayer.nextVideo) ytPlayer.nextVideo();
       }
 
       // Close music popup when tapping outside
@@ -939,11 +1038,6 @@
       };
 
       function setWallpaper(n) {
-        const iframe = document.getElementById("bgIframe");
-        iframe.src = "";
-        iframe.classList.remove("active");
-        document.getElementById("musicBtn").classList.remove("playing");
-        document.getElementById("musicStop").classList.remove("visible");
         document.body.style.backgroundImage = `url(${wallpapers[n]})`;
         document
           .querySelectorAll(".wp-thumb")
