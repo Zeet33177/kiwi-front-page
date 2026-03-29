@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Kiwi Home</title>
     <link
-      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+      href="https://fonts.googleapis.com/css2?family=VT323&display=swap"
       rel="stylesheet"
     />
     <style>
@@ -19,7 +19,8 @@
         font-family:
           -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
           Cantarell, sans-serif;
-        background: #0a0e27;
+        background: #0a0e27 url(images/wallpaper1.gif) no-repeat center center fixed;
+        background-size: cover;
         min-height: 100vh;
         padding: 20px;
         color: #fff;
@@ -29,49 +30,16 @@
         overflow: hidden;
       }
 
-      /* Animated Gradient Background */
-      .gradient-bg {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100vh;
-        z-index: -1;
-        overflow: hidden;
-      }
-
-      .gradient-bg::after {
+      body::before {
         content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 1000vh;
-        background: linear-gradient(
-          0deg,
-          rgb(101, 91, 239) 0%,
-          rgb(250, 40, 191) 20%,
-          rgb(255, 70, 101) 40%,
-          rgb(251, 222, 78) 60%,
-          rgb(0, 251, 234) 80%,
-          rgb(85, 93, 239) 100%
-        );
-        animation: gradientMove 17.5s ease-in-out infinite;
-        opacity: 0.15;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, var(--overlay-opacity, 0.55));
+        z-index: 0;
+        pointer-events: none;
       }
 
-      @keyframes gradientMove {
-        0% {
-          top: 0;
-        }
-        50% {
-          top: calc(100vh - 1000vh);
-        }
-        100% {
-          top: 0;
-        }
-      }
-
+      /* Animated Gradient Background */
       .container {
         max-width: 600px;
         margin: 0 auto;
@@ -90,10 +58,10 @@
       }
 
       .header h1 {
-        font-size: 1.4em;
+        font-size: 2.2em;
         margin-bottom: 10px;
         text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.5);
-        font-family: "Press Start 2P", monospace;
+        font-family: "VT323", monospace;
         line-height: 1.6;
       }
 
@@ -171,13 +139,13 @@
         flex: 1;
         border: none;
         padding: 16px 10px 16px 16px;
-        font-size: 10px;
+        font-size: 20px;
         outline: none;
         background: transparent;
         color: #ffffff;
         position: relative;
         z-index: 1;
-        font-family: "Press Start 2P", monospace;
+        font-family: "VT323", monospace;
         caret-color: #ffffff;
       }
 
@@ -381,11 +349,11 @@
       .footer {
         text-align: center;
         opacity: 0.7;
-        font-size: 0.5em;
+        font-size: 0.85em;
         padding-top: 20px;
         padding-bottom: 50px;
         color: #00d4ff;
-        font-family: "Press Start 2P", monospace;
+        font-family: "VT323", monospace;
         line-height: 2;
       }
 
@@ -507,7 +475,7 @@
         padding: 6px;
         border-radius: 6px;
         border: none;
-        font-size: 11px;
+        font-size: 20px;
         cursor: pointer;
         transition: opacity 0.2s;
       }
@@ -555,10 +523,117 @@
           padding: 15px;
         }
       }
+
+      /* ========== WALLPAPER PICKER ========== */
+      .footer {
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .footer:hover {
+        opacity: 1;
+      }
+
+      .wp-picker {
+        display: none;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(5, 9, 28, 0.92);
+        backdrop-filter: blur(10px);
+        border-top: 2px solid rgba(255,255,255,0.15);
+        padding: 16px;
+        z-index: 100;
+        transform: translateY(100%);
+        transition: transform 0.3s ease;
+      }
+
+      .wp-picker.open {
+        display: block;
+        transform: translateY(0);
+      }
+
+      .wp-picker-label {
+        font-family: "VT323", monospace;
+        font-size: 18px;
+        color: rgba(255,255,255,0.5);
+        text-align: center;
+        margin-bottom: 12px;
+        letter-spacing: 2px;
+      }
+
+      .wp-thumbs {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+      }
+
+      .wp-thumb {
+        width: 56px;
+        height: 80px;
+        background-size: cover;
+        background-position: center;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: border-color 0.15s ease;
+        flex-shrink: 0;
+      }
+
+      .wp-thumb.active {
+        border-color: #cccccc;
+      }
+
+      .wp-thumb:hover {
+        border-color: rgba(255,255,255,0.5);
+      }
+
+      .wp-darkness {
+        margin-top: 14px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .wp-darkness-label {
+        font-family: "VT323", monospace;
+        font-size: 16px;
+        color: rgba(255,255,255,0.5);
+        letter-spacing: 1px;
+        white-space: nowrap;
+      }
+
+      .wp-darkness input[type=range] {
+        flex: 1;
+        -webkit-appearance: none;
+        appearance: none;
+        height: 4px;
+        background: rgba(255,255,255,0.2);
+        outline: none;
+        border-radius: 0;
+      }
+
+      .wp-darkness input[type=range]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 14px;
+        height: 14px;
+        background: #cccccc;
+        cursor: pointer;
+        border-radius: 0;
+      }
+
+      .wp-darkness input[type=range]::-moz-range-thumb {
+        width: 14px;
+        height: 14px;
+        background: #cccccc;
+        cursor: pointer;
+        border-radius: 0;
+        border: none;
+      }
     </style>
   </head>
   <body>
-    <div class="gradient-bg"></div>
+    <div class="gradient-bg" style="display:none"></div>
     <div class="container">
       <div class="search-box">
         <form class="search-form" onsubmit="return handleSearch(event);">
@@ -661,7 +736,22 @@
         </div>
       </div>
       <div class="quote" id="quoteText"></div>
-      <div class="footer">made with ❤️ by zeet</div>
+      <div class="footer" onclick="toggleWallpaperPicker()">made with ❤️ by zeet</div>
+    </div>
+
+    <div class="wp-picker" id="wpPicker">
+      <div class="wp-picker-label">WALLPAPER</div>
+      <div class="wp-thumbs">
+        <div class="wp-thumb" id="wp-1" style="background-image:url(images/wallpaper1.gif)" onclick="setWallpaper(1)"></div>
+        <div class="wp-thumb" id="wp-2" style="background-image:url(images/wallpaper2.gif)" onclick="setWallpaper(2)"></div>
+        <div class="wp-thumb" id="wp-3" style="background-image:url(images/wallpaper3.gif)" onclick="setWallpaper(3)"></div>
+        <div class="wp-thumb" id="wp-4" style="background-image:url(images/wallpaper4.webp)" onclick="setWallpaper(4)"></div>
+        <div class="wp-thumb" id="wp-5" style="background-image:url(images/wallpaper5.gif)" onclick="setWallpaper(5)"></div>
+      </div>
+      <div class="wp-darkness">
+        <span class="wp-darkness-label">DARK</span>
+        <input type="range" id="darknessSlider" min="0" max="90" value="55" oninput="setDarkness(this.value)" />
+      </div>
     </div>
 
     <script>
@@ -801,6 +891,50 @@
           closePlaylistPopup();
         }
       });
+
+      // ========== WALLPAPER PICKER ==========
+      const wallpapers = {
+        1: 'images/wallpaper1.gif',
+        2: 'images/wallpaper2.gif',
+        3: 'images/wallpaper3.gif',
+        4: 'images/wallpaper4.webp',
+        5: 'images/wallpaper5.gif',
+      };
+
+      function setWallpaper(n) {
+        document.body.style.backgroundImage = `url(${wallpapers[n]})`;
+        document.querySelectorAll('.wp-thumb').forEach(t => t.classList.remove('active'));
+        document.getElementById('wp-' + n).classList.add('active');
+        localStorage.setItem('wallpaper', n);
+      }
+
+      function setDarkness(value) {
+        document.body.style.setProperty('--overlay-opacity', value / 100);
+        localStorage.setItem('darkness', value);
+      }
+
+      function toggleWallpaperPicker() {
+        document.getElementById('wpPicker').classList.toggle('open');
+      }
+
+      // Close picker when tapping outside
+      document.addEventListener('click', (e) => {
+        const picker = document.getElementById('wpPicker');
+        if (picker.classList.contains('open') &&
+            !picker.contains(e.target) &&
+            !e.target.closest('.footer')) {
+          picker.classList.remove('open');
+        }
+      });
+
+      // Load saved wallpaper
+      const savedWp = localStorage.getItem('wallpaper') || 1;
+      setWallpaper(savedWp);
+
+      // Load saved darkness
+      const savedDarkness = localStorage.getItem('darkness') || 55;
+      document.getElementById('darknessSlider').value = savedDarkness;
+      setDarkness(savedDarkness);
     </script>
   </body>
 </html>
