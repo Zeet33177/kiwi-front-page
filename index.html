@@ -267,94 +267,6 @@
         overflow: visible;
       }
 
-      /* Checkmark SVG styling */
-      .checkmark {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
-        display: block;
-        stroke-width: 2;
-        stroke: #fff;
-        stroke-miterlimit: 10;
-        opacity: 0;
-        pointer-events: none;
-      }
-
-      .checkmark__circle {
-        stroke-dasharray: 166;
-        stroke-dashoffset: 166;
-        stroke-width: 2;
-        stroke-miterlimit: 10;
-        stroke: #fff;
-        fill: none;
-      }
-
-      .checkmark__check {
-        transform-origin: 50% 50%;
-        stroke-dasharray: 48;
-        stroke-dashoffset: 48;
-        stroke-width: 3;
-        stroke: #fff;
-        fill: none;
-      }
-
-      /* Animation keyframes */
-      @keyframes checkmark-stroke {
-        100% {
-          stroke-dashoffset: 0;
-        }
-      }
-
-      @keyframes checkmark-scale {
-        0%,
-        100% {
-          transform: translate(-50%, -50%) scale(1);
-        }
-        50% {
-          transform: translate(-50%, -50%) scale(1.1);
-        }
-      }
-
-      @keyframes checkmark-fill {
-        100% {
-          box-shadow: inset 0px 0px 0px 30px currentColor;
-        }
-      }
-
-      /* Active state animations */
-      .youtube-btn.active .checkmark,
-      .amazon-btn.active .checkmark,
-      .pinterest-btn.active .checkmark {
-        opacity: 1;
-        animation: checkmark-scale 0.3s ease-in-out 0.9s both;
-      }
-
-      .youtube-btn.active .checkmark__circle,
-      .amazon-btn.active .checkmark__circle,
-      .pinterest-btn.active .checkmark__circle {
-        animation: checkmark-stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
-      }
-
-      .youtube-btn.active .checkmark__check,
-      .amazon-btn.active .checkmark__check,
-      .pinterest-btn.active .checkmark__check {
-        animation: checkmark-stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s
-          forwards;
-      }
-
-      /* Hide original icon when active */
-      .youtube-btn.active svg:first-child,
-      .amazon-btn.active svg:first-child,
-      .pinterest-btn.active svg:first-child {
-        opacity: 0;
-        transform: scale(0.8);
-        transition: all 0.3s ease;
-      }
-
       .youtube-btn {
         width: 48px;
         height: 48px;
@@ -675,24 +587,6 @@
             class="pixel-icon yt-icon"
             alt="YouTube"
           />
-          <svg
-            class="checkmark"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 52 52"
-          >
-            <circle
-              class="checkmark__circle"
-              cx="26"
-              cy="26"
-              r="25"
-              fill="none"
-            />
-            <path
-              class="checkmark__check"
-              fill="none"
-              d="M14.1 27.2l7.1 7.2 16.7-16.8"
-            />
-          </svg>
         </button>
 
         <button
@@ -700,24 +594,6 @@
           onclick="searchOn('https://www.amazon.in/s?k=', this)"
         >
           <div class="pixel-icon amazon-icon"></div>
-          <svg
-            class="checkmark"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 52 52"
-          >
-            <circle
-              class="checkmark__circle"
-              cx="26"
-              cy="26"
-              r="25"
-              fill="none"
-            />
-            <path
-              class="checkmark__check"
-              fill="none"
-              d="M14.1 27.2l7.1 7.2 16.7-16.8"
-            />
-          </svg>
         </button>
 
         <button
@@ -725,24 +601,6 @@
           onclick="searchOn('https://in.pinterest.com/search/pins/?q=', this)"
         >
           <div class="pixel-icon pinterest-icon"></div>
-          <svg
-            class="checkmark"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 52 52"
-          >
-            <circle
-              class="checkmark__circle"
-              cx="26"
-              cy="26"
-              r="25"
-              fill="none"
-            />
-            <path
-              class="checkmark__check"
-              fill="none"
-              d="M14.1 27.2l7.1 7.2 16.7-16.8"
-            />
-          </svg>
         </button>
       </div>
 
@@ -752,7 +610,7 @@
             id="yt-iframe"
             width="320"
             height="180"
-            src="https://www.youtube.com/embed/oe4XJ851oOk?enablejsapi=1&rel=0&loop=1&playsinline=1&modestbranding=1&autoplay=0"
+            src="https://www.youtube.com/embed/oe4XJ851oOk?enablejsapi=1&rel=0&loop=1&playsinline=1&modestbranding=1&autoplay=0&vq=tiny"
             frameborder="0"
             allow="
               accelerometer;
@@ -848,11 +706,6 @@
         // Trigger search bar animation
         triggerSearchAnimation();
 
-        // Trigger checkmark animation on button
-        if (buttonElement) {
-          buttonElement.classList.add("active");
-        }
-
         // Navigate after animation completes
         setTimeout(() => {
           window.location.href = url + encodeURIComponent(query);
@@ -933,7 +786,7 @@
         document.getElementById("yt-iframe").src =
           "https://www.youtube.com/embed/?listType=playlist&list=" +
           listId +
-          "&enablejsapi=1&rel=0&playsinline=1&modestbranding=1&autoplay=1&index=0";
+          "&enablejsapi=1&rel=0&playsinline=1&modestbranding=1&autoplay=1&index=0&vq=tiny";
         closePlaylistPopup();
         document.getElementById("playlistInput").value = "";
       }
