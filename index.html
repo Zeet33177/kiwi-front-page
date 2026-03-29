@@ -547,6 +547,13 @@
         font-size: 26px;
       }
 
+      .player-btn.quality {
+        width: auto;
+        padding: 0 10px;
+        font-size: 15px;
+        letter-spacing: 1px;
+      }
+
       .quote {
         text-align: center;
         margin-top: 0;
@@ -743,6 +750,7 @@
           <button class="player-btn" onclick="prevTrack()" title="Previous">⏮</button>
           <button class="player-btn play-pause" id="playPauseBtn" onclick="togglePlayPause()" title="Play/Pause">⏸</button>
           <button class="player-btn" onclick="nextTrack()" title="Next">⏭</button>
+          <button class="player-btn quality" id="qualityBtn" onclick="cycleQuality()" title="Quality">360p</button>
           <button class="player-btn" onclick="stopMusic()" title="Stop" style="font-size:18px; color:#ff8080; border-color:rgba(255,80,80,0.4);">■</button>
         </div>
         <div class="music-popup" id="musicPopup">
@@ -901,6 +909,21 @@
       let isPlaying = false;
       let pendingListId = null;
 
+      const qualities = [
+        { key: "small",  label: "240p" },
+        { key: "medium", label: "360p" },
+        { key: "large",  label: "480p" },
+        { key: "hd720",  label: "720p" },
+      ];
+      let qualityIndex = 1; // default 360p
+
+      function cycleQuality() {
+        qualityIndex = (qualityIndex + 1) % qualities.length;
+        const q = qualities[qualityIndex];
+        document.getElementById("qualityBtn").textContent = q.label;
+        if (ytPlayer && ytPlayer.setPlaybackQuality) ytPlayer.setPlaybackQuality(q.key);
+      }
+
       window.onYouTubeIframeAPIReady = function () {
         if (pendingListId) _createPlayer(pendingListId);
       };
@@ -926,10 +949,10 @@
             rel: 0,
             playsinline: 1,
             modestbranding: 1,
-            vq: "tiny",
+            vq: qualities[qualityIndex].key,
           },
           events: {
-            onReady: (e) => { e.target.playVideo(); },
+            onReady: (e) => { e.target.setPlaybackQuality(qualities[qualityIndex].key); e.target.playVideo(); },
             onStateChange: (e) => {
               isPlaying = e.data === YT.PlayerState.PLAYING;
               document.getElementById("playPauseBtn").textContent = isPlaying ? "⏸" : "▶";
@@ -996,6 +1019,8 @@
         document.getElementById("musicBtn").style.display = "";
         document.getElementById("playerControls").classList.remove("visible");
         document.getElementById("playPauseBtn").textContent = "⏸";
+        document.getElementById("qualityBtn").textContent = "360p";
+        qualityIndex = 1;
         isPlaying = false;
 
         const savedWp = localStorage.getItem("wallpaper") || 1;
