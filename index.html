@@ -721,15 +721,7 @@
         </div>
       </div>
       <div class="quote" id="quoteText"></div>
-      <div
-        class="footer"
-        onclick="
-          toggleWallpaperPicker();
-          event.stopPropagation();
-        "
-      >
-        made with ❤️ by zeet
-      </div>
+      <div class="footer" onclick="toggleWallpaperPicker()">made with ❤️ by zeet</div>
     </div>
 
     <iframe
@@ -876,20 +868,6 @@
         searchInput.style.pointerEvents = "none";
       }
 
-      //Auto Focus
-      document.querySelector(".container").addEventListener("click", () => {
-        searchInput.focus();
-      });
-      // Prevent auto focus on these
-      document
-        .querySelectorAll(
-          ".social-button,.search-form,.footer,.music-btn-wrap,.wp-picker",
-        )
-        .forEach((e) => {
-          e.addEventListener("click", (ev) => {
-            ev.stopPropagation();
-          });
-        });
 
       // ========== MUSIC PLAYER ==========
       function toggleMusicPopup(e) {
@@ -917,12 +895,12 @@
         }
         const listId = match[1];
         const iframe = document.getElementById("bgIframe");
+        iframe.classList.add("active");
+        document.body.style.backgroundImage = "none";
         iframe.src =
           "https://www.youtube.com/embed/?listType=playlist&list=" +
           listId +
           "&enablejsapi=1&rel=0&playsinline=1&modestbranding=1&autoplay=1&index=0&vq=tiny";
-        iframe.classList.add("active");
-        document.body.style.backgroundImage = "none";
         document.getElementById("musicBtn").classList.add("playing");
         document.getElementById("musicStop").classList.add("visible");
         closeMusicPopup();
