@@ -917,11 +917,17 @@
       ];
       let qualityIndex = 1; // default 360p
 
+      function _applyQuality() {
+        if (!ytPlayer) return;
+        const key = qualities[qualityIndex].key;
+        if (ytPlayer.setPlaybackQualityRange) ytPlayer.setPlaybackQualityRange(key, key);
+        if (ytPlayer.setPlaybackQuality) ytPlayer.setPlaybackQuality(key);
+      }
+
       function cycleQuality() {
         qualityIndex = (qualityIndex + 1) % qualities.length;
-        const q = qualities[qualityIndex];
-        document.getElementById("qualityBtn").textContent = q.label;
-        if (ytPlayer && ytPlayer.setPlaybackQuality) ytPlayer.setPlaybackQuality(q.key);
+        document.getElementById("qualityBtn").textContent = qualities[qualityIndex].label;
+        _applyQuality();
       }
 
       window.onYouTubeIframeAPIReady = function () {
@@ -949,13 +955,17 @@
             rel: 0,
             playsinline: 1,
             modestbranding: 1,
-            vq: qualities[qualityIndex].key,
           },
           events: {
-            onReady: (e) => { e.target.setPlaybackQuality(qualities[qualityIndex].key); e.target.playVideo(); },
+            onReady: (e) => {
+              _applyQuality();
+              e.target.playVideo();
+            },
             onStateChange: (e) => {
               isPlaying = e.data === YT.PlayerState.PLAYING;
               document.getElementById("playPauseBtn").textContent = isPlaying ? "⏸" : "▶";
+              // Re-apply every time a new track starts playing (YouTube resets quality per track)
+              if (e.data === YT.PlayerState.PLAYING) _applyQuality();
             },
           },
         });
