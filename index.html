@@ -1,0 +1,1308 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kiwi Home</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=VT323&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+          Cantarell, sans-serif;
+        background: #0a0e27 url(images/wallpaper1.gif) no-repeat center center
+          fixed;
+        background-size: cover;
+        min-height: 100vh;
+        padding: 20px;
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, var(--overlay-opacity, 0.55));
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      /* Animated Gradient Background */
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        position: relative;
+        z-index: 1;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding-top: 40px;
+      }
+
+      .header h1 {
+        font-size: 2.2em;
+        margin-bottom: 10px;
+        text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.5);
+        font-family: "VT323", monospace;
+        line-height: 1.6;
+      }
+
+      .time {
+        font-size: 1.2em;
+        opacity: 0.9;
+      }
+
+      .search-box {
+        margin-bottom: 40px;
+      }
+
+      /* ========== SEARCH FORM ANIMATIONS ========== */
+      .search-form {
+        display: flex;
+        position: relative;
+        background: #05091c;
+        border: 2px solid #cccccc;
+        border-radius: 0;
+        overflow: hidden;
+        box-shadow: none;
+        transition: none;
+        clip-path: polygon(
+          3px 0%,
+          calc(100% - 3px) 0%,
+          100% 3px,
+          100% calc(100% - 3px),
+          calc(100% - 3px) 100%,
+          3px 100%,
+          0% calc(100% - 3px),
+          0% 3px
+        );
+      }
+
+      .search-form:hover {
+        border-color: #cccccc;
+        box-shadow: none;
+      }
+
+      .search-form::before {
+        display: none;
+      }
+
+      /* Progress fill animation */
+      .search-form::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0;
+        height: 100%;
+        background: linear-gradient(90deg, #00d4ff 0%, #0066ff 100%);
+        border-radius: 50px;
+        transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 0;
+        opacity: 0;
+      }
+
+      .search-form.searching::before {
+        width: 100%;
+        opacity: 0.25;
+        animation: shimmer 1.5s infinite;
+      }
+
+      @keyframes shimmer {
+        0% {
+          background-position: -200% center;
+        }
+        100% {
+          background-position: 200% center;
+        }
+      }
+
+      .search-input {
+        flex: 1;
+        border: none;
+        padding: 16px 10px 16px 16px;
+        font-size: 20px;
+        outline: none;
+        background: transparent;
+        color: #ffffff;
+        position: relative;
+        z-index: 1;
+        font-family: "VT323", monospace;
+        caret-color: #ffffff;
+      }
+
+      .search-input::placeholder {
+        color: rgba(255, 255, 255, 0.35);
+        opacity: 1;
+      }
+
+      .search-form:hover .search-input::placeholder {
+        color: #006688;
+        opacity: 1;
+      }
+
+      .search-form.searching .search-input {
+        color: #33eeff;
+      }
+
+      .search-btn {
+        border: none;
+        background: transparent;
+        padding: 0 14px;
+        cursor: pointer;
+        position: relative;
+        z-index: 1;
+        transition: none;
+        -webkit-tap-highlight-color: transparent;
+        align-self: stretch;
+        display: flex;
+        align-items: center;
+      }
+
+      .search-btn img {
+        width: 28px;
+        height: 28px;
+        image-rendering: pixelated;
+        filter: invert(1);
+        display: block;
+        transition: transform 0.15s ease;
+      }
+
+      .search-btn:active img {
+        animation: arrowSlide 0.4s ease forwards;
+      }
+
+      @keyframes arrowSlide {
+        0% {
+          transform: translateX(0);
+        }
+        40% {
+          transform: translateX(8px);
+        }
+        100% {
+          transform: translateX(0);
+        }
+      }
+
+      .search-form.searching .search-btn img {
+        animation: arrowSlide 0.4s ease forwards;
+      }
+
+      /* Pulse animation on searching */
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.7;
+        }
+      }
+
+      .search-form.searching .search-btn {
+        animation: pulse 1.5s infinite;
+      }
+
+      .quick-links {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 30px;
+      }
+
+      /* ========== SOCIAL BUTTON ANIMATIONS ========== */
+      .youtube-btn,
+      .amazon-btn,
+      .pinterest-btn {
+        position: relative;
+        overflow: visible;
+      }
+
+      .youtube-btn {
+        width: 48px;
+        height: 48px;
+        border-radius: 6px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.15s ease;
+        -webkit-tap-highlight-color: transparent;
+        overflow: hidden;
+      }
+
+      .youtube-btn:hover:not(.active) {
+        transform: translate(-2px, -2px);
+      }
+
+      .youtube-btn svg:first-child {
+        display: none;
+      }
+
+      .youtube-btn.active {
+        transform: translate(2px, 2px);
+      }
+
+      .amazon-btn {
+        width: 48px;
+        height: 48px;
+        border-radius: 6px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.15s ease;
+        margin-left: 15px;
+        -webkit-tap-highlight-color: transparent;
+        overflow: hidden;
+      }
+
+      .amazon-btn:hover:not(.active) {
+        transform: translate(-2px, -2px);
+      }
+
+      .amazon-btn svg:first-child {
+        display: none;
+      }
+
+      .amazon-btn.active {
+        transform: translate(2px, 2px);
+      }
+
+      .pinterest-btn {
+        width: 48px;
+        height: 48px;
+        border-radius: 6px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.15s ease;
+        margin-left: 15px;
+        -webkit-tap-highlight-color: transparent;
+        overflow: hidden;
+      }
+
+      .pinterest-btn:hover:not(.active) {
+        transform: translate(-2px, -2px);
+      }
+
+      .pinterest-btn svg:first-child {
+        display: none;
+      }
+
+      .pinterest-btn.active {
+        transform: translate(2px, 2px);
+      }
+
+      .link-card {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 20px;
+        text-align: center;
+        text-decoration: none;
+        color: white;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .link-card:active {
+        transform: scale(0.95);
+        background: rgba(255, 255, 255, 0.25);
+      }
+
+      .link-icon {
+        font-size: 2em;
+        margin-bottom: 10px;
+        display: block;
+      }
+
+      .link-name {
+        font-size: 0.9em;
+        font-weight: 500;
+      }
+
+      .footer {
+        text-align: center;
+        opacity: 0.7;
+        font-size: 0.85em;
+        padding-top: 20px;
+        padding-bottom: 50px;
+        color: #00d4ff;
+        font-family: "VT323", monospace;
+        line-height: 2;
+      }
+
+      .pixel-icon {
+        width: 48px;
+        height: 48px;
+        image-rendering: pixelated;
+        image-rendering: crisp-edges;
+        display: block;
+      }
+
+      .yt-icon {
+        width: 48px;
+        height: 48px;
+        object-fit: cover;
+      }
+
+      .amazon-icon {
+        background-image: url(images/amazonandpinterest.png);
+        background-size: 200% 200%;
+        background-position: 0% 50%;
+      }
+
+      .pinterest-icon {
+        background-image: url(images/amazonandpinterest.png);
+        background-size: 200% 200%;
+        background-position: 100% 50%;
+      }
+
+      /* ========== BACKGROUND VIDEO IFRAME ========== */
+      .bg-iframe {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100vw;
+        height: 56.25vw;
+        min-height: 100vh;
+        min-width: 177.78vh;
+        pointer-events: none;
+        z-index: -1;
+        border: none;
+      }
+
+      .bg-iframe.active {
+        display: block;
+      }
+
+      /* ========== MUSIC BAR ========== */
+      .music-bar-wrap {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        margin-top: auto;
+        margin-bottom: 10px;
+      }
+
+      /* the single pill that holds everything */
+      .music-bar {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: rgba(0, 0, 0, 0.55);
+        border: 2px solid rgba(255, 255, 255, 0.25);
+        padding: 6px 10px;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        clip-path: polygon(
+          4px 0%, calc(100% - 4px) 0%,
+          100% 4px, 100% calc(100% - 4px),
+          calc(100% - 4px) 100%, 4px 100%,
+          0% calc(100% - 4px), 0% 4px
+        );
+        transition: border-color 0.15s;
+      }
+
+      .music-bar:hover { border-color: rgba(255,255,255,0.6); }
+      .music-bar.playing { border-color: rgba(255,255,255,0.5); }
+
+      /* ♫ idle icon + EQ animation when playing */
+      .music-bar-icon {
+        display: flex;
+        align-items: flex-end;
+        gap: 2px;
+        height: 20px;
+        width: 18px;
+        cursor: pointer;
+      }
+
+      .eq-bar {
+        width: 3px;
+        background: #fff;
+        border-radius: 0;
+        transform-origin: bottom;
+      }
+
+      /* idle: show static ♫ character, hide eq bars */
+      .music-bar-icon .eq-static {
+        font-family: "VT323", monospace;
+        font-size: 22px;
+        line-height: 1;
+        color: #fff;
+        display: block;
+      }
+
+      .music-bar-icon .eq-bar { display: none; }
+
+      .music-bar.playing .music-bar-icon .eq-static { display: none; }
+      .music-bar.playing .music-bar-icon .eq-bar    { display: block; }
+
+      @keyframes eq1 { 0%,100%{height:4px} 50%{height:16px} }
+      @keyframes eq2 { 0%,100%{height:12px} 50%{height:4px} }
+      @keyframes eq3 { 0%,100%{height:8px}  25%{height:16px} 75%{height:3px} }
+      @keyframes eq4 { 0%,100%{height:14px} 50%{height:5px} }
+
+      .music-bar.playing .eq-bar:nth-child(1) { animation: eq1 0.7s ease-in-out infinite; }
+      .music-bar.playing .eq-bar:nth-child(2) { animation: eq2 0.5s ease-in-out infinite; }
+      .music-bar.playing .eq-bar:nth-child(3) { animation: eq3 0.9s ease-in-out infinite; }
+      .music-bar.playing .eq-bar:nth-child(4) { animation: eq4 0.6s ease-in-out infinite; }
+
+      /* pixel-art player buttons inside the bar */
+      .pxbtn {
+        width: 32px;
+        height: 32px;
+        background: transparent;
+        border: 2px solid rgba(255,255,255,0.25);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+        transition: border-color 0.12s, background 0.12s;
+        flex-shrink: 0;
+        clip-path: polygon(
+          3px 0%, calc(100% - 3px) 0%,
+          100% 3px, 100% calc(100% - 3px),
+          calc(100% - 3px) 100%, 3px 100%,
+          0% calc(100% - 3px), 0% 3px
+        );
+      }
+
+      .pxbtn:hover { border-color: #fff; background: rgba(255,255,255,0.08); }
+      .pxbtn:active { background: rgba(255,255,255,0.18); }
+      .pxbtn.stop-btn { border-color: rgba(255,80,80,0.4); }
+      .pxbtn.stop-btn:hover { border-color: #ff8080; }
+
+      .pxbtn svg { display: block; }
+
+      /* quality label button */
+      .pxbtn.quality {
+        width: auto;
+        padding: 0 7px;
+        font-family: "VT323", monospace;
+        font-size: 14px;
+        letter-spacing: 1px;
+        color: #fff;
+        clip-path: polygon(
+          3px 0%, calc(100% - 3px) 0%,
+          100% 3px, 100% calc(100% - 3px),
+          calc(100% - 3px) 100%, 3px 100%,
+          0% calc(100% - 3px), 0% 3px
+        );
+      }
+
+      /* hide controls when not playing */
+      .music-bar-controls { display: none; align-items: center; gap: 4px; }
+      .music-bar.playing .music-bar-controls { display: flex; }
+
+      /* ========== MUSIC POPUP ========== */
+      .music-popup {
+        display: none;
+        position: absolute;
+        bottom: calc(100% + 10px);
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(5, 9, 28, 0.97);
+        border: 2px solid rgba(255, 255, 255, 0.18);
+        padding: 12px;
+        width: 270px;
+        z-index: 20;
+        backdrop-filter: blur(12px);
+        clip-path: polygon(
+          4px 0%, calc(100% - 4px) 0%,
+          100% 4px, 100% calc(100% - 4px),
+          calc(100% - 4px) 100%, 4px 100%,
+          0% calc(100% - 4px), 0% 4px
+        );
+      }
+
+      .music-popup.open { display: block; }
+
+      .music-popup-row {
+        display: flex;
+        gap: 6px;
+      }
+
+      .music-popup input {
+        flex: 1;
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 7px 9px;
+        color: #fff;
+        font-size: 15px;
+        font-family: "VT323", monospace;
+        outline: none;
+        min-width: 0;
+      }
+
+      .music-popup input::placeholder { color: rgba(255,255,255,0.28); }
+
+      .music-popup-actions {
+        display: flex;
+        gap: 6px;
+        flex-shrink: 0;
+      }
+
+      .music-popup-actions button {
+        padding: 7px 10px;
+        border: none;
+        font-size: 16px;
+        font-family: "VT323", monospace;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .music-confirm { background: #fff; color: #05091c; }
+      .music-save    { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.8); }
+      .music-cancel  { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.5); width: 100%; margin-top: 6px; }
+
+      /* saved playlist chips */
+      .music-saved {
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .music-saved-label {
+        font-family: "VT323", monospace;
+        font-size: 13px;
+        color: rgba(255,255,255,0.3);
+        letter-spacing: 2px;
+        margin-bottom: 2px;
+      }
+
+      .saved-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+      }
+
+      .saved-chip {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        background: rgba(255,255,255,0.07);
+        border: 1px solid rgba(255,255,255,0.18);
+        padding: 3px 8px 3px 9px;
+        cursor: pointer;
+        font-family: "VT323", monospace;
+        font-size: 15px;
+        color: #fff;
+        transition: background 0.12s, border-color 0.12s;
+        max-width: 200px;
+        clip-path: polygon(
+          3px 0%, calc(100% - 3px) 0%,
+          100% 3px, 100% calc(100% - 3px),
+          calc(100% - 3px) 100%, 3px 100%,
+          0% calc(100% - 3px), 0% 3px
+        );
+      }
+
+      .saved-chip:hover { background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.4); }
+
+      .saved-chip-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 140px;
+      }
+
+      .saved-chip-del {
+        font-size: 12px;
+        color: rgba(255,80,80,0.6);
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        line-height: 1;
+        flex-shrink: 0;
+        font-family: "VT323", monospace;
+      }
+
+      .saved-chip-del:hover { color: #ff8080; }
+
+      .quote {
+        text-align: center;
+        margin-top: 0;
+        margin-bottom: 15px;
+        font-size: 0.75em;
+        color: #00d4ff;
+        opacity: 0.5;
+        font-style: italic;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.4;
+      }
+
+      @media (max-width: 480px) {
+        .header h1 {
+          font-size: 2em;
+        }
+
+        .quick-links {
+          grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+          gap: 12px;
+        }
+
+        .link-card {
+          padding: 15px;
+        }
+      }
+
+      /* ========== WALLPAPER PICKER ========== */
+      .footer {
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .footer:hover {
+        opacity: 1;
+      }
+
+      .wp-picker {
+        display: none;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(5, 9, 28, 0.92);
+        backdrop-filter: blur(10px);
+        border-top: 2px solid rgba(255, 255, 255, 0.15);
+        padding: 16px;
+        z-index: 100;
+        transform: translateY(100%);
+        transition: transform 0.3s ease;
+      }
+
+      .wp-picker.open {
+        display: block;
+        transform: translateY(0);
+      }
+
+      .wp-picker-label {
+        font-family: "VT323", monospace;
+        font-size: 18px;
+        color: rgba(255, 255, 255, 0.5);
+        text-align: center;
+        margin-bottom: 12px;
+        letter-spacing: 2px;
+      }
+
+      .wp-thumbs {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+      }
+
+      .wp-thumb {
+        width: 56px;
+        height: 80px;
+        background-size: cover;
+        background-position: center;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: border-color 0.15s ease;
+        flex-shrink: 0;
+      }
+
+      .wp-thumb.active {
+        border-color: #cccccc;
+      }
+
+      .wp-thumb:hover {
+        border-color: rgba(255, 255, 255, 0.5);
+      }
+
+      .wp-darkness {
+        margin-top: 14px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .wp-darkness-label {
+        font-family: "VT323", monospace;
+        font-size: 16px;
+        color: rgba(255, 255, 255, 0.5);
+        letter-spacing: 1px;
+        white-space: nowrap;
+      }
+
+      .wp-darkness input[type="range"] {
+        flex: 1;
+        -webkit-appearance: none;
+        appearance: none;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.2);
+        outline: none;
+        border-radius: 0;
+      }
+
+      .wp-darkness input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 14px;
+        height: 14px;
+        background: #cccccc;
+        cursor: pointer;
+        border-radius: 0;
+      }
+
+      .wp-darkness input[type="range"]::-moz-range-thumb {
+        width: 14px;
+        height: 14px;
+        background: #cccccc;
+        cursor: pointer;
+        border-radius: 0;
+        border: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="gradient-bg" style="display: none"></div>
+    <div class="container">
+      <div class="search-box">
+        <form class="search-form" onsubmit="return handleSearch(event);">
+          <input
+            type="text"
+            class="search-input"
+            placeholder=""
+            id="searchInput"
+            autocomplete="off"
+          />
+          <button type="submit" class="search-btn">
+            <img src="images/right-arrow.png" alt="search" />
+          </button>
+        </form>
+      </div>
+
+      <div class="quick-links">
+        <button
+          class="youtube-btn"
+          onclick="
+            searchOn('https://www.youtube.com/results?search_query=', this)
+          "
+        >
+          <img
+            src="images/ytlogo.png"
+            class="pixel-icon yt-icon"
+            alt="YouTube"
+          />
+        </button>
+
+        <button
+          class="amazon-btn"
+          onclick="searchOn('https://www.amazon.in/s?k=', this)"
+        >
+          <div class="pixel-icon amazon-icon"></div>
+        </button>
+
+        <button
+          class="pinterest-btn"
+          onclick="searchOn('https://in.pinterest.com/search/pins/?q=', this)"
+        >
+          <div class="pixel-icon pinterest-icon"></div>
+        </button>
+      </div>
+
+      <div class="music-bar-wrap">
+        <!-- the whole pill: click icon area to open popup, controls appear inline when playing -->
+        <div class="music-bar" id="musicBar">
+          <!-- EQ / ♫ icon — clicking opens popup -->
+          <div class="music-bar-icon" id="musicBarIcon" onclick="toggleMusicPopup(event)">
+            <span class="eq-static">♫</span>
+            <div class="eq-bar" style="height:4px"></div>
+            <div class="eq-bar" style="height:12px"></div>
+            <div class="eq-bar" style="height:8px"></div>
+            <div class="eq-bar" style="height:14px"></div>
+          </div>
+          <!-- playback controls (hidden until music plays) -->
+          <div class="music-bar-controls" id="playerControls">
+            <button class="pxbtn" id="prevBtn" onclick="prevTrack()" title="Previous">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <rect x="2" y="3" width="2" height="10" fill="white"/>
+                <polygon points="14,3 6,8 14,13" fill="white"/>
+              </svg>
+            </button>
+            <button class="pxbtn" id="playPauseBtn" onclick="togglePlayPause()" title="Play/Pause">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" id="ppIcon">
+                <rect x="4" y="3" width="3" height="10" fill="white"/>
+                <rect x="9" y="3" width="3" height="10" fill="white"/>
+              </svg>
+            </button>
+            <button class="pxbtn" id="nextBtn" onclick="nextTrack()" title="Next">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <rect x="12" y="3" width="2" height="10" fill="white"/>
+                <polygon points="2,3 10,8 2,13" fill="white"/>
+              </svg>
+            </button>
+            <button class="pxbtn quality" id="qualityBtn" onclick="cycleQuality()" title="Quality">360p</button>
+            <button class="pxbtn stop-btn" onclick="stopMusic()" title="Stop">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <rect x="3" y="3" width="10" height="10" fill="#ff8080"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- popup: URL input + save + saved chips -->
+        <div class="music-popup" id="musicPopup">
+          <div class="music-popup-row">
+            <input type="text" id="musicInput" placeholder="YouTube playlist URL" />
+            <div class="music-popup-actions">
+              <button class="music-confirm" onclick="loadMusic()">▶</button>
+              <button class="music-save"    onclick="savePlaylist()">+</button>
+            </div>
+          </div>
+          <button class="music-cancel" onclick="closeMusicPopup()">CANCEL</button>
+          <div class="music-saved" id="savedSection">
+            <div class="music-saved-label">SAVED</div>
+            <div class="saved-chips" id="savedChips"></div>
+          </div>
+        </div>
+      </div>
+      <div class="quote" id="quoteText"></div>
+      <div class="footer" onclick="toggleWallpaperPicker()">made with ❤️ by zeet</div>
+    </div>
+
+    <div id="bgIframe" class="bg-iframe"></div>
+
+    <div class="wp-picker" id="wpPicker">
+      <div class="wp-picker-label">WALLPAPER</div>
+      <div class="wp-thumbs">
+        <div
+          class="wp-thumb"
+          id="wp-1"
+          style="background-image: url(images/wallpaper1.gif)"
+          onclick="setWallpaper(1)"
+        ></div>
+        <div
+          class="wp-thumb"
+          id="wp-2"
+          style="background-image: url(images/wallpaper2.gif)"
+          onclick="setWallpaper(2)"
+        ></div>
+        <div
+          class="wp-thumb"
+          id="wp-3"
+          style="background-image: url(images/wallpaper3.gif)"
+          onclick="setWallpaper(3)"
+        ></div>
+        <div
+          class="wp-thumb"
+          id="wp-4"
+          style="background-image: url(images/wallpaper4.webp)"
+          onclick="setWallpaper(4)"
+        ></div>
+        <div
+          class="wp-thumb"
+          id="wp-5"
+          style="background-image: url(images/wallpaper5.gif)"
+          onclick="setWallpaper(5)"
+        ></div>
+      </div>
+      <div class="wp-darkness">
+        <span class="wp-darkness-label">DARK</span>
+        <input
+          type="range"
+          id="darknessSlider"
+          min="0"
+          max="90"
+          value="55"
+          oninput="setDarkness(this.value)"
+        />
+      </div>
+    </div>
+
+    <script>
+      // ========== QUOTE OF THE DAY ==========
+      const quotes = [
+        "to become who you want to be you need to sacrifice who you are",
+        "have confidence in the very air that surrounds you",
+        "you can't fix everything at once but you can fix something right now",
+        "needing nothing attracts everything",
+        "who am i to judge when i myself walk as an imperfect man",
+        "you cannot suffer the past and future, because they do not exist",
+        "in the war of ego the loser always wins",
+        "being angry is like drinking poison and expecting the other person to die",
+        "to be a star you must burn",
+        "observe, but don't absorb",
+        "the world is cruel, therefore i won't be",
+        "comfort is the worst addiction",
+        "a person chosen by god will never be chosen by humans",
+      ];
+
+      function getDayOfYear() {
+        const now = new Date();
+        const start = new Date(now.getFullYear(), 0, 0);
+        const diff = now - start;
+        const oneDay = 1000 * 60 * 60 * 24;
+        return Math.floor(diff / oneDay);
+      }
+
+      // Set quote based on day of year
+      const quoteIndex = getDayOfYear() % quotes.length;
+      document.getElementById("quoteText").textContent = quotes[quoteIndex];
+
+      // ========== SEARCH ANIMATION LOGIC ==========
+      const searchForm = document.querySelector(".search-form");
+      const searchInput = document.getElementById("searchInput");
+      let originalPlaceholder = "";
+
+      function searchOn(url, buttonElement) {
+        const query = searchInput.value.trim();
+        if (!query) return;
+
+        // Trigger search bar animation
+        triggerSearchAnimation();
+
+        // Navigate after animation completes
+        setTimeout(() => {
+          window.location.href = url + encodeURIComponent(query);
+        }, 1200);
+      }
+
+      // Handle search with animation
+      function handleSearch(event) {
+        event.preventDefault();
+        const query = searchInput.value.trim();
+
+        if (!query) return false;
+
+        // Trigger search animation
+        triggerSearchAnimation();
+
+        // Check if it's a URL
+        const urlPattern = /^(https?:\/\/)|(www\.)|(\w+\.\w+)/;
+
+        setTimeout(() => {
+          if (urlPattern.test(query)) {
+            const url = query.startsWith("http") ? query : "https://" + query;
+            window.location.href = url;
+          } else {
+            // Search on Google
+            window.location.href =
+              "https://www.google.com/search?q=" + encodeURIComponent(query);
+          }
+        }, 300);
+
+        return false;
+      }
+
+      // Search animation function
+      function triggerSearchAnimation() {
+        searchForm.classList.add("searching");
+        originalPlaceholder = searchInput.placeholder;
+        searchInput.value = "Searching...";
+        searchInput.style.pointerEvents = "none";
+      }
+
+
+      // ========== YOUTUBE IFRAME API ==========
+      let ytPlayer = null;
+      let isPlaying = false;
+      let pendingListId = null;
+      let currentPlaylistId = null;
+      let savedTimestamp = 0;
+      let savedPlaylistIndex = 0;
+
+      const qualities = [
+        { key: "small",  label: "240p" },
+        { key: "medium", label: "360p" },
+        { key: "large",  label: "480p" },
+        { key: "hd720",  label: "720p" },
+      ];
+      let qualityIndex = 1;
+
+      // SVGs for play/pause swap
+      const SVG_PAUSE = `<rect x="4" y="3" width="3" height="10" fill="white"/><rect x="9" y="3" width="3" height="10" fill="white"/>`;
+      const SVG_PLAY  = `<polygon points="4,2 13,8 4,14" fill="white"/>`;
+
+      function _setPlayingState(playing) {
+        isPlaying = playing;
+        document.getElementById("ppIcon").innerHTML = playing ? SVG_PAUSE : SVG_PLAY;
+        document.getElementById("musicBar").classList.toggle("playing", playing || !!currentPlaylistId);
+      }
+
+      // setPlaybackQuality was removed from the YT API; rebuild player at current position instead.
+      function _rebuildAtQuality() {
+        if (!ytPlayer || !currentPlaylistId) return;
+        const key = qualities[qualityIndex].key;
+        savedPlaylistIndex = ytPlayer.getPlaylistIndex ? ytPlayer.getPlaylistIndex() : savedPlaylistIndex;
+        savedTimestamp     = ytPlayer.getCurrentTime  ? Math.floor(ytPlayer.getCurrentTime()) : savedTimestamp;
+        ytPlayer.destroy(); ytPlayer = null;
+        const old = document.getElementById("bgIframe");
+        const fresh = document.createElement("div");
+        fresh.id = "bgIframe"; fresh.className = "bg-iframe active";
+        old.replaceWith(fresh);
+        _createPlayer(currentPlaylistId, { index: savedPlaylistIndex, start: savedTimestamp, vq: key });
+      }
+
+      function cycleQuality() {
+        qualityIndex = (qualityIndex + 1) % qualities.length;
+        document.getElementById("qualityBtn").textContent = qualities[qualityIndex].label;
+        _rebuildAtQuality();
+      }
+
+      window.onYouTubeIframeAPIReady = function () {
+        if (pendingListId) _createPlayer(pendingListId);
+      };
+
+      function _loadYTApi() {
+        if (window.YT && window.YT.Player) return;
+        const tag = document.createElement("script");
+        tag.src = "https://www.youtube.com/iframe_api";
+        document.head.appendChild(tag);
+      }
+
+      function _createPlayer(listId, overrides) {
+        currentPlaylistId = listId;
+        document.getElementById("bgIframe").classList.add("active");
+        document.body.style.backgroundImage = "none";
+        document.getElementById("musicBar").classList.add("playing");
+        const vq        = (overrides && overrides.vq)    ? overrides.vq    : qualities[qualityIndex].key;
+        const resumeIdx = (overrides && overrides.index)  ? overrides.index : 0;
+        const resumeSec = (overrides && overrides.start)  ? overrides.start : 0;
+        ytPlayer = new YT.Player("bgIframe", {
+          width: "100%", height: "100%",
+          playerVars: {
+            listType: "playlist", list: listId,
+            autoplay: 1, controls: 0, rel: 0,
+            playsinline: 1, modestbranding: 1,
+            vq: vq,
+          },
+          events: {
+            onReady: (e) => {
+              // playerVars index/start are unreliable for playlists;
+              // playVideoAt + seekTo in onReady is the only guaranteed path.
+              if (resumeIdx > 0) e.target.playVideoAt(resumeIdx);
+              else               e.target.playVideo();
+              if (resumeSec > 0) e.target.seekTo(resumeSec, true);
+            },
+            onStateChange: (e) => {
+              _setPlayingState(e.data === YT.PlayerState.PLAYING);
+              if (e.data === YT.PlayerState.PLAYING)
+                savedPlaylistIndex = ytPlayer.getPlaylistIndex ? ytPlayer.getPlaylistIndex() : savedPlaylistIndex;
+            },
+          },
+        });
+      }
+
+      // ========== MUSIC PLAYER ==========
+      function toggleMusicPopup(e) {
+        e.stopPropagation();
+        document.getElementById("musicPopup").classList.toggle("open");
+        renderSavedChips();
+        setTimeout(() => document.getElementById("musicInput").focus(), 50);
+      }
+
+      function closeMusicPopup() {
+        document.getElementById("musicPopup").classList.remove("open");
+      }
+
+      function _extractListId(raw) {
+        const m = raw.match(/[?&]list=([a-zA-Z0-9_-]+)/);
+        return m ? m[1] : null;
+      }
+
+      function loadMusic(listIdOverride) {
+        const raw = listIdOverride || document.getElementById("musicInput").value.trim();
+        const listId = listIdOverride ? listIdOverride : _extractListId(raw);
+        if (!listId) {
+          const inp = document.getElementById("musicInput");
+          inp.style.borderColor = "rgba(255,80,80,0.7)";
+          setTimeout(() => inp.style.borderColor = "", 1200);
+          return;
+        }
+        document.getElementById("playerControls").classList.add("visible");
+        pendingListId = listId;
+        _loadYTApi();
+        if (window.YT && window.YT.Player) _createPlayer(listId);
+        closeMusicPopup();
+        document.getElementById("musicInput").value = "";
+      }
+
+      function stopMusic() {
+        if (ytPlayer && ytPlayer.stopVideo) ytPlayer.stopVideo();
+        if (ytPlayer && ytPlayer.destroy) { ytPlayer.destroy(); ytPlayer = null; }
+        const old = document.getElementById("bgIframe");
+        const fresh = document.createElement("div");
+        fresh.id = "bgIframe"; fresh.className = "bg-iframe";
+        old.replaceWith(fresh);
+
+        document.getElementById("playerControls").classList.remove("visible");
+        document.getElementById("qualityBtn").textContent = "360p";
+        document.getElementById("ppIcon").innerHTML = SVG_PAUSE;
+        qualityIndex = 1;
+        isPlaying = false;
+        currentPlaylistId = null;
+        savedTimestamp = 0;
+        savedPlaylistIndex = 0;
+        document.getElementById("musicBar").classList.remove("playing");
+
+        const savedWp = localStorage.getItem("wallpaper") || 1;
+        setWallpaper(savedWp);
+        closeMusicPopup();
+      }
+
+      function togglePlayPause() {
+        if (!ytPlayer) return;
+        if (isPlaying) ytPlayer.pauseVideo();
+        else ytPlayer.playVideo();
+      }
+
+      function prevTrack() { if (ytPlayer && ytPlayer.previousVideo) ytPlayer.previousVideo(); }
+      function nextTrack() { if (ytPlayer && ytPlayer.nextVideo)     ytPlayer.nextVideo(); }
+
+      // ========== SAVED PLAYLISTS ==========
+      function _getSaved() {
+        try { return JSON.parse(localStorage.getItem("savedPlaylists") || "[]"); }
+        catch { return []; }
+      }
+
+      function _putSaved(arr) {
+        localStorage.setItem("savedPlaylists", JSON.stringify(arr));
+      }
+
+      function savePlaylist() {
+        const raw = document.getElementById("musicInput").value.trim();
+        const listId = _extractListId(raw);
+        if (!listId) {
+          const inp = document.getElementById("musicInput");
+          inp.style.borderColor = "rgba(255,80,80,0.7)";
+          setTimeout(() => inp.style.borderColor = "", 1200);
+          return;
+        }
+        const arr = _getSaved();
+        if (arr.find(p => p.id === listId)) { renderSavedChips(); return; }
+
+        // Optimistically add with a temp name, then update with real title from oEmbed
+        const tempName = "playlist " + (arr.length + 1);
+        arr.push({ id: listId, name: tempName });
+        _putSaved(arr);
+        renderSavedChips();
+
+        fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/playlist?list=${listId}&format=json`)
+          .then(r => r.ok ? r.json() : null)
+          .then(data => {
+            if (!data || !data.title) return;
+            const updated = _getSaved().map(p => p.id === listId ? { ...p, name: data.title } : p);
+            _putSaved(updated);
+            renderSavedChips();
+          })
+          .catch(() => {}); // keep the temp name on network failure
+      }
+
+      function deletePlaylist(id) {
+        _putSaved(_getSaved().filter(p => p.id !== id));
+        renderSavedChips();
+      }
+
+      function renderSavedChips() {
+        const arr = _getSaved();
+        const section = document.getElementById("savedSection");
+        const container = document.getElementById("savedChips");
+        section.style.display = arr.length ? "" : "none";
+        container.innerHTML = "";
+        arr.forEach(p => {
+          const chip = document.createElement("div");
+          chip.className = "saved-chip";
+          chip.innerHTML = `<span class="saved-chip-name" title="${p.id}">${p.name}</span><button class="saved-chip-del" onclick="event.stopPropagation();deletePlaylist('${p.id}')" title="Remove">✕</button>`;
+          chip.addEventListener("click", () => { loadMusic(p.id); });
+          container.appendChild(chip);
+        });
+      }
+
+      // Close music popup when tapping outside
+      document.addEventListener("click", (e) => {
+        const popup = document.getElementById("musicPopup");
+        if (
+          popup.classList.contains("open") &&
+          !document.getElementById("musicBar").contains(e.target)
+        ) closeMusicPopup();
+      });
+
+      // ========== WALLPAPER PICKER ==========
+      const wallpapers = {
+        1: "images/wallpaper1.gif",
+        2: "images/wallpaper2.gif",
+        3: "images/wallpaper3.gif",
+        4: "images/wallpaper4.webp",
+        5: "images/wallpaper5.gif",
+      };
+
+      function setWallpaper(n) {
+        document.body.style.backgroundImage = `url(${wallpapers[n]})`;
+        document
+          .querySelectorAll(".wp-thumb")
+          .forEach((t) => t.classList.remove("active"));
+        document.getElementById("wp-" + n).classList.add("active");
+        localStorage.setItem("wallpaper", n);
+      }
+
+      function setDarkness(value) {
+        document.body.style.setProperty("--overlay-opacity", value / 100);
+        localStorage.setItem("darkness", value);
+      }
+
+      function toggleWallpaperPicker() {
+        document.getElementById("wpPicker").classList.toggle("open");
+      }
+
+      // Close picker when tapping outside
+      document.addEventListener("click", (e) => {
+        const picker = document.getElementById("wpPicker");
+        if (
+          picker.classList.contains("open") &&
+          !picker.contains(e.target) &&
+          !e.target.closest(".footer")
+        ) {
+          picker.classList.remove("open");
+        }
+      });
+
+      // Load saved wallpaper
+      const savedWp = localStorage.getItem("wallpaper") || 1;
+      setWallpaper(savedWp);
+
+      // Load saved darkness
+      const savedDarkness = localStorage.getItem("darkness") || 55;
+      document.getElementById("darknessSlider").value = savedDarkness;
+      setDarkness(savedDarkness);
+
+      // Init saved chips visibility
+      renderSavedChips();
+    </script>
+  </body>
+</html>
